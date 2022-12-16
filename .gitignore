@@ -1,0 +1,8 @@
+**/.vs
+**/.vscode
+**/bin
+**/obj
+*.db*
+**/node_modules
+**/dist
+**/.idea
