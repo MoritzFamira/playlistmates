@@ -1,0 +1,85 @@
+@startuml
+entity Song {
+    id: Integer
+    --
+    title: String
+    releaseDate: Date
+    durationInMillis: Integer
+    artists: List<Artist>
+    platforms: List<Platform>
+}
+entity SongCollection {
+    id: Integer
+    --
+    title: String
+    creationDate: Date
+}
+entity Playlist {
+    --
+    description: String
+    public: boolean
+}
+entity Album {
+    --
+    artists: Artist[]
+}
+entity Account {
+    email: Email
+    --
+    AccountName: String
+    password: String
+    salt: String
+
+}
+'entity at.spengergasse.datamodel.Artist {
+'    --
+'    description: String
+'}
+
+entity Platform {
+'will need to check apis to see what we need in here
+'can be done in later versions of the datamodel
+    name: String
+}
+'entity Genre {
+    'label: String
+    '--
+    'not sure if this should be in here since it is calculated
+    'numberOfCategorisations: Integer
+'}
+entity LogItem {
+    id: Integer
+    --
+    timeStamp: DateTime
+    account: Account
+}
+class Artist <<(V,#FF7700)value-object>>{}
+class Email <<(V,#FF7700)value-object>>{}
+
+enum PlaylistRoles {
+    OWNER
+    COLLABORATOR
+    LISTENER
+}
+enum Action {
+    ADD_SONG
+    REMOVE_SONG
+    RENAME_PLAYLIST
+}
+
+SongCollection *--o Song
+Playlist o--* Account
+Email --* Account
+'Song o--o at.spengergasse.datamodel.Artist
+Platform o--o Playlist
+Platform o--o Song : is on <
+Account *--o Platform : is on >
+'Account o--* Song : can categorise >
+'Song o--o Genre
+LogItem --o Action
+Playlist o-- LogItem
+SongCollection <|-- Album
+SongCollection <|-- Playlist
+Album *--o Artist
+Song *--o Artist
+@enduml
