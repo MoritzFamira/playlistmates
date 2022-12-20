@@ -9,10 +9,10 @@ namespace PlaylistMates.Application.Model
 
     public class Song : IEntity<string>
     {
-        public Song(string id, string title, DateTime releaseDate, int durationInMillis, ICollection<Artist> artists, ICollection<Platform> platforms)
+        public Song(string isrcCode, string title, DateTime releaseDate, int durationInMillis, ICollection<Artist> artists, ICollection<Platform> platforms)
         {
             // id is the isrc code of the song
-            Id = id;
+            IsrcCode = isrcCode;
             Titel = title;
             ReleaseDate = releaseDate;
             DurationInMillis = durationInMillis;
@@ -25,11 +25,12 @@ namespace PlaylistMates.Application.Model
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; private set; }  // ISRC Code with ID (standardized with iso 3901)
+        public string IsrcCode { get; private set; }  // ISRC Code with ID (standardized with iso 3901)
         public string Titel { get; set; }  // name of the song
         public DateTime ReleaseDate { get; set; }  
         public int DurationInMillis { get; set; }   
         public ICollection<Artist> Artists { get; set; }
         public ICollection<Platform> Platforms { get; set; }
+        public string Id => IsrcCode;
     }
 }
