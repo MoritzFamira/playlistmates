@@ -19,6 +19,19 @@ namespace PlaylistMates.Application.Model
             Artists = artists;
             Platforms = platforms;
         }
+
+        public Song(string isrcCode, string title, DateTime releaseDate, int durationInMillis, ICollection<Artist> artists, ICollection<Platform> platforms, ICollection<SongCollection> songCollections)
+        {
+            // id is the isrc code of the song
+            IsrcCode = isrcCode;
+            Titel = title;
+            ReleaseDate = releaseDate;
+            DurationInMillis = durationInMillis;
+            Artists = artists;
+            Platforms = platforms;
+            SongCollections = songCollections;
+        }
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected Song() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -31,6 +44,8 @@ namespace PlaylistMates.Application.Model
         public int DurationInMillis { get; set; }   
         public ICollection<Artist> Artists { get; set; }
         public ICollection<Platform> Platforms { get; set; }
+
+        public ICollection<SongCollection>? SongCollections { get; set; }
         public string Id => IsrcCode;
     }
 }
