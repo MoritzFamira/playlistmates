@@ -30,6 +30,6 @@ Are you tired of constantly switching between music platforms just to access you
 
 ## Authors
 
-- [@NicoJanis](https://github.com/NicoJanis)
-- [@MoritzFamira](https://github.com/MoritzFamira)
-- [@BenjaminSobhian](https://github.com/BenjaminSobhian)
+- [@NicoJanis](https://github.com/NicoJanis), [nico.janis@gmail.com](mailto:nico.janis@gmail.com)
+- [@MoritzFamira](https://github.com/MoritzFamira), [famiramoritz@gmail.com](mailto:famiramoritz@gmail.com)
+- [@BenjaminSobhian](https://github.com/BenjaminSobhian), [SOB20429@spengergasse.at](mailto:SOB20429@spengergasse.at)
