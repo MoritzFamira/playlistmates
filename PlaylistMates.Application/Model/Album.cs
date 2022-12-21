@@ -18,7 +18,7 @@ namespace PlaylistMates.Application.Model
         protected List<Artist> _artists { get; set; }
         public IReadOnlyCollection<Artist> Artists => _artists;
 
-        //TODO: think about more fields
+        // TODO: think about more fields
 
         // Is add really necessary? maybe only for flexibility
     }
