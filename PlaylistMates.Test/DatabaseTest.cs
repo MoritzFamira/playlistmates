@@ -16,10 +16,11 @@ namespace PlaylistMates.Test
         public DatabaseTest()
         {
             var opt = new DbContextOptionsBuilder()
-                .UseOracle(@"User Id=pos;Password=pos;Data Source=MyOracleDb;")
+                .UseOracle("User Id=pos;Password=pos;Data Source=localhost:1521/XEPDB1;")
                 .Options;
 
             _db = new Context(opt);
+
         }
         public void Dispose()
         {
