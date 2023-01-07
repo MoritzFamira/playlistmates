@@ -20,5 +20,23 @@ namespace PlaylistMates.Application.Infrastructure
         public DbSet<Platform> Platforms => Set<Platform>();
         public DbSet<LogItem> LogItems => Set<LogItem>();
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Account>().HasIndex(a => a.Email).IsUnique();
+
+            modelBuilder.Entity<Song>().OwnsMany(s => s.Artists);
+            modelBuilder.Entity<Album>().OwnsMany(a => a.Artists);
+            // converts the enum int values to string values
+            modelBuilder.Entity<LogItem>().Property(l => l.Action).HasConversion<string>();
+            modelBuilder.Entity<AccountPlaylist>().Property(a => a.Role).HasConversion<string>();
+            modelBuilder.Entity<AccountPlaylist>().Property(a => a.Role).HasDefaultValue(PlaylistRole.LISTENER);
+
+            // composite key for the AccountPlaylist entity/relation
+            modelBuilder.Entity<AccountPlaylist>().HasKey(a => new { a.PlaylistId, a.AccountId });
+
+            modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURREN_TIMESTAMP");
+
+        }
+
     }
 }
