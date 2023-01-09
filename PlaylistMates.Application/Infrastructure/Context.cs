@@ -34,7 +34,7 @@ namespace PlaylistMates.Application.Infrastructure
             // composite key for the AccountPlaylist entity/relation
             modelBuilder.Entity<AccountPlaylist>().HasKey(a => new { a.PlaylistId, a.AccountId });
 
-            modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURREN_TIMESTAMP");
+            modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         }
 
