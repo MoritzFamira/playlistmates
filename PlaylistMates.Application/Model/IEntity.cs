@@ -3,6 +3,6 @@
 
     public interface IEntity<T>
     {
-        T Id { get; }
+        public T Id { get; }
     }
 }
