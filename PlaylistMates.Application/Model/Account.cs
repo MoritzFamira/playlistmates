@@ -5,33 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace PlaylistMates.Application.Model
 {
-    public class Account : IEntity<string>
+    [Index(nameof(Email), IsUnique = true)]
+    public class Account : IEntity<int>
     {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected Account() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public Account(string email, string accountName, string salt, ICollection<Platform> platforms, ICollection<Playlist> playlists, ICollection<AccountPlaylist> accountPlaylists)
+        public Account(string email, string accountName, string salt)
         {
             Email = email;
             AccountName = accountName;
             Salt = salt;
-            Platforms = platforms;
-            Playlists = playlists;
-            AccountPlaylists = accountPlaylists;
         }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
         public string Email { get; private set; }
         public string AccountName { get; set; }
         public string Salt { get; set; }
-        public ICollection<Platform> Platforms { get; set; }
-        public ICollection<Playlist> Playlists { get; set; }
-        public string Id => Email;
-        public ICollection<AccountPlaylist> AccountPlaylists { get; set; }
+        public List<Platform> Platforms { get;  } = new();
+        public List<Playlist> Playlists { get;  } = new();
+        public List<AccountPlaylist> AccountPlaylists { get;  } = new();
 
     }
 }

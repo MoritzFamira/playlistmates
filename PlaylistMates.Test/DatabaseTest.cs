@@ -9,7 +9,7 @@ using Oracle.EntityFrameworkCore;
 
 namespace PlaylistMates.Test
 {
-    public class DatabaseTest : IDisposable
+    public class DatabaseTest
     {
         protected readonly Context _db;
 
@@ -21,10 +21,6 @@ namespace PlaylistMates.Test
 
             _db = new Context(opt);
 
-        }
-        public void Dispose()
-        {
-            _db.Dispose();
         }
     }
 }

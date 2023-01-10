@@ -1,0 +1,6 @@
+sqlplus system/oracle@//localhost/XEPDB1 <<< "
+    DROP USER pos CASCADE;
+    CREATE USER pos IDENTIFIED BY pos;
+    GRANT CONNECT, RESOURCE, CREATE VIEW TO pos;
+    GRANT UNLIMITED TABLESPACE TO pos;
+"
