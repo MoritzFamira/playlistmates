@@ -43,17 +43,15 @@ public class ContextTests : DatabaseTest
 
         var platforms = new List<Platform>();
         platforms.Add(new Platform("Spotify"));
-        platforms.Add(new Platform("Apple Music"));
-        platforms.Add(new Platform("Amazon Music"));
+        platforms.Add(new Platform("Apple_Music"));
+        platforms.Add(new Platform("Amazon_Music"));
         _db.Platforms.AddRange(platforms);
         _db.SaveChanges();
 
         var accountPlatforms = new Faker<AccountPlatforms>()
             .CustomInstantiator(a => new AccountPlatforms(
                 account: a.PickRandom(accounts).Id,
-                platform: a.PickRandom(platforms).Id, 
-                // the above fields are primary keys and it is very bad practice to generate those randomly without ensuring uniqueneess, this is only a tempoary solution
-                
+                platform: a.PickRandom(platforms).Id,
                 authtoken: a.Internet.Password() // password is used instead of an authtoken for simplicity
                 ))
             .Generate(15)
