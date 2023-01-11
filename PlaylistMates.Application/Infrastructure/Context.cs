@@ -30,7 +30,7 @@ namespace PlaylistMates.Application.Infrastructure
             modelBuilder.Entity<Album>().OwnsMany(a => a.Artists);
             // converts the enum int values to string values
             modelBuilder.Entity<LogItem>().Property(l => l.Action).HasConversion<string>();
-            modelBuilder.Entity<AccountPlaylist>().Property(a => a.Role).HasConversion<string>();
+            // modelBuilder.Entity<AccountPlaylist>().Property(a => a.Role).HasConversion<string>(); -- removed due to custom value converter
             modelBuilder.Entity<AccountPlaylist>().Property(a => a.Role).HasDefaultValue(PlaylistRole.LISTENER);
 
             // composite key for the AccountPlaylist entity/relation
@@ -38,13 +38,18 @@ namespace PlaylistMates.Application.Infrastructure
             modelBuilder.Entity<AccountPlatforms>().HasKey(a => new { a.AccountId, a.PlatformId });
 
             modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            /* 
+             * Manipulates data to only store first letter of enum entry in property Role of AccountPlaylist
+             */
             modelBuilder
-               .Entity<AccountPlaylist>()
-               .Property(e => e.Role)
-               .HasConversion(
-                   v => v.ToString().Substring(0, 1),
-                   v => (PlaylistRole)Enum.Parse(typeof(PlaylistRole), v, true));
+            .Entity<AccountPlaylist>()
+            .Property(a => a.Role)
+            .HasConversion(
+                    v => string.IsNullOrEmpty(v.ToString()) ? "" : v.ToString().FirstOrDefault().ToString(),
+                    v => (PlaylistRole)Enum.Parse(typeof(PlaylistRole), v)
+                );
+        }
         }
     }
 
-}
