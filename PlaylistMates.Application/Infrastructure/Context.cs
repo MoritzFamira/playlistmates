@@ -38,8 +38,13 @@ namespace PlaylistMates.Application.Infrastructure
             modelBuilder.Entity<AccountPlatforms>().HasKey(a => new { a.AccountId, a.PlatformId });
 
             modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
-
+            modelBuilder
+               .Entity<AccountPlaylist>()
+               .Property(e => e.Role)
+               .HasConversion(
+                   v => v.ToString().Substring(0, 1),
+                   v => (PlaylistRole)Enum.Parse(typeof(PlaylistRole), v, true));
         }
-
     }
+
 }

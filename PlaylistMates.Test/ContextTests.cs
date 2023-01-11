@@ -62,11 +62,31 @@ public class ContextTests : DatabaseTest
         _db.AccountPlatforms.AddRange(accountPlatforms);
         _db.SaveChanges();
 
+        var playlists = new Faker<Playlist>()
+            .CustomInstantiator(a => new Playlist(
+                description: a.Lorem.Sentence(),
+                isPublic: a.Random.Bool()
+                ));
 
+        _db.Playlists.AddRange(playlists);
+        _db.SaveChanges();
+
+        var accountPlaylist = new Faker<AccountPlaylist>()
+            .CustomInstantiator(a => new AccountPlaylist(
+               account: a.PickRandom(accounts).Id,
+               playlist: a.Random.Int(),
+               role: a.PickRandom<PlaylistRole>()
+           ));
+
+        _db.AccountPlaylists.AddRange(accountPlaylist);
+        _db.SaveChanges();
         _db.ChangeTracker.Clear();
+
         Assert.True(_db.Accounts.Any());
+        Assert.True(_db.Playlists.Any());
         Assert.True(_db.Platforms.Count() == 3);
         Assert.True(_db.AccountPlatforms.Any());
+        Assert.True(_db.AccountPlaylists.Any());
 
     }
 }
