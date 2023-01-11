@@ -19,6 +19,7 @@ namespace PlaylistMates.Application.Infrastructure
         public DbSet<Account> Accounts => Set<Account>();
         public DbSet<Platform> Platforms => Set<Platform>();
         public DbSet<LogItem> LogItems => Set<LogItem>();
+        public DbSet<AccountPlaylist> AccountPlaylists => Set<AccountPlaylist>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
