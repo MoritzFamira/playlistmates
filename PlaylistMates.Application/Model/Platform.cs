@@ -8,9 +8,8 @@ namespace PlaylistMates.Application.Model
 {
     public class Platform : IEntity<int>
     {
-        public Platform(int id, string name)
+        public Platform(string name)
         {
-            Id = id;
             Name= name;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
