@@ -39,7 +39,34 @@ public class ContextTests : DatabaseTest
         _db.Accounts.AddRange(accounts);
         _db.SaveChanges();
 
+        
+
+        var platforms = new List<Platform>();
+        platforms.Add(new Platform("Spotify"));
+        platforms.Add(new Platform("Apple Music"));
+        platforms.Add(new Platform("Amazon Music"));
+        _db.Platforms.AddRange(platforms);
+        _db.SaveChanges();
+
+        var accountPlatforms = new Faker<AccountPlatforms>()
+            .CustomInstantiator(a => new AccountPlatforms(
+                account: a.PickRandom(accounts).Id,
+                platform: a.PickRandom(platforms).Id, 
+                // the above fields are primary keys and it is very bad practice to generate those randomly without ensuring uniqueneess, this is only a tempoary solution
+                
+                authtoken: a.Internet.Password() // password is used instead of an authtoken for simplicity
+                ))
+            .Generate(15)
+            .GroupBy(a => new { a.AccountId, a.PlatformId }).Select(g => g.First())
+            .ToList();
+        _db.AccountPlatforms.AddRange(accountPlatforms);
+        _db.SaveChanges();
+
+
         _db.ChangeTracker.Clear();
         Assert.True(_db.Accounts.Any());
+        Assert.True(_db.Platforms.Count() == 3);
+        Assert.True(_db.AccountPlatforms.Any());
+
     }
 }
