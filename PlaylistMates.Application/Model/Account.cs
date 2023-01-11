@@ -32,6 +32,7 @@ namespace PlaylistMates.Application.Model
         public List<Platform> Platforms { get;  } = new();
         public List<Playlist> Playlists { get;  } = new();
         public List<AccountPlaylist> AccountPlaylists { get;  } = new();
+        public List<AccountPlatforms> AccountPlatforms { get; } = new();
 
 
         private string GenerateSalt()

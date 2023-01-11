@@ -20,6 +20,7 @@ namespace PlaylistMates.Application.Infrastructure
         public DbSet<Platform> Platforms => Set<Platform>();
         public DbSet<LogItem> LogItems => Set<LogItem>();
         public DbSet<AccountPlaylist> AccountPlaylists => Set<AccountPlaylist>();
+        public DbSet<AccountPlatforms> AccountPlatforms => Set<AccountPlatforms>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,7 @@ namespace PlaylistMates.Application.Infrastructure
 
             // composite key for the AccountPlaylist entity/relation
             modelBuilder.Entity<AccountPlaylist>().HasKey(a => new { a.PlaylistId, a.AccountId });
+            modelBuilder.Entity<AccountPlatforms>().HasKey(a => new { a.AccountId, a.PlatformId });
 
             modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
