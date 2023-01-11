@@ -39,7 +39,7 @@ public class ContextTests : DatabaseTest
         _db.Accounts.AddRange(accounts);
         _db.SaveChanges();
 
-        
+
 
         var platforms = new List<Platform>();
         platforms.Add(new Platform("Spotify"));
@@ -60,30 +60,55 @@ public class ContextTests : DatabaseTest
         _db.AccountPlatforms.AddRange(accountPlatforms);
         _db.SaveChanges();
 
+        var songCollections = new Faker<SongCollection>()
+            .CustomInstantiator(s => new SongCollection(
+                title: s.Lorem.Word(),
+                creationDate: s.Date.Recent(1000)
+                ))
+            .Generate(30)
+            .ToList();
+        _db.SongCollections.AddRange(songCollections);
+        _db.SaveChanges();
+
         var playlists = new Faker<Playlist>()
-            .CustomInstantiator(a => new Playlist(
-                description: a.Lorem.Sentence(),
-                isPublic: a.Random.Bool()
-                ));
+            .CustomInstantiator(p => new Playlist(
+                description: p.Lorem.Sentence(),
+                isPublic: p.Random.Bool()
+                ))
+            .RuleFor(p => p.Title, f => f.Lorem.Word())
+            .RuleFor(p => p.CreationDate, f => f.Date.Recent(1000))
+            .Generate(20)
+            .ToList();
 
         _db.Playlists.AddRange(playlists);
         _db.SaveChanges();
 
+        
+
+
+        // error here
         var accountPlaylist = new Faker<AccountPlaylist>()
             .CustomInstantiator(a => new AccountPlaylist(
                account: a.PickRandom(accounts).Id,
-               playlist: a.Random.Int(),
+               playlist: a.PickRandom(playlists).Id,
                role: a.PickRandom<PlaylistRole>()
-           ));
+           ))
+            .Generate(15)
+            .GroupBy(a => new { a.AccountId, a.PlaylistId }).Select(g => g.First())
+            .ToList();
 
         _db.AccountPlaylists.AddRange(accountPlaylist);
         _db.SaveChanges();
+
+
+
         _db.ChangeTracker.Clear();
 
         Assert.True(_db.Accounts.Any());
         Assert.True(_db.Playlists.Any());
         Assert.True(_db.Platforms.Count() == 3);
         Assert.True(_db.AccountPlatforms.Any());
+        Assert.True(_db.SongCollections.Any());
         Assert.True(_db.AccountPlaylists.Any());
 
     }
