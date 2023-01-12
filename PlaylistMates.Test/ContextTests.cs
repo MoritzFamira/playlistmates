@@ -37,7 +37,6 @@ public class ContextTests : DatabaseTest
             .ToList();
         
         _db.Accounts.AddRange(accounts);
-        _db.SaveChanges();
 
 
 
@@ -46,7 +45,6 @@ public class ContextTests : DatabaseTest
         platforms.Add(new Platform("Apple_Music"));
         platforms.Add(new Platform("Amazon_Music"));
         _db.Platforms.AddRange(platforms);
-        _db.SaveChanges();
 
         var accountPlatforms = new Faker<AccountPlatforms>()
             .CustomInstantiator(a => new AccountPlatforms(
@@ -68,7 +66,6 @@ public class ContextTests : DatabaseTest
             .Generate(30)
             .ToList();
         _db.SongCollections.AddRange(songCollections);
-        _db.SaveChanges();
 
         var playlists = new Faker<Playlist>()
             .CustomInstantiator(p => new Playlist(
@@ -81,7 +78,6 @@ public class ContextTests : DatabaseTest
             .ToList();
 
         _db.Playlists.AddRange(playlists);
-        _db.SaveChanges();
 
         
 
@@ -98,9 +94,45 @@ public class ContextTests : DatabaseTest
             .ToList();
 
         _db.AccountPlaylists.AddRange(accountPlaylist);
+
+        var artists = new Faker<Artist>()
+            .CustomInstantiator(a => new Artist(
+                Name: a.Person.UserName
+                ))
+            .Generate(20)
+            .ToList();
+
+        var songs = new Faker<Song>()
+            .CustomInstantiator(s => new Song(
+                isrcCode: s.Lorem.Word(),
+                title: s.Lorem.Word(),
+                releaseDate: s.Date.Recent(1000),
+                durationInMillis: s.Random.Int(1000,100000),
+                artists: (List<Artist>) s.Random.ListItems(artists),
+                platforms: (List<Platform>) s.Random.ListItems(platforms)
+                ))
+            .Generate(15)
+            .ToList();
+
+        _db.Songs.AddRange(songs);
+
+        var albums = new Faker<Album>()
+            .CustomInstantiator(a => new Album(
+                artists: (List<Artist>)a.Random.ListItems(artists)))
+            .Generate(15)
+            .ToList();
+        _db.Albums.AddRange(albums);
+
+        var logItems = new Faker<LogItem>()
+            .CustomInstantiator(l => new LogItem(
+                account: l.PickRandom(accounts),
+                action: l.PickRandom<Application.Model.Action>()))
+            .Generate(30)
+            .ToList();
+        _db.LogItems.AddRange(logItems);
+        
+        
         _db.SaveChanges();
-
-
 
         _db.ChangeTracker.Clear();
 
@@ -110,6 +142,8 @@ public class ContextTests : DatabaseTest
         Assert.True(_db.AccountPlatforms.Any());
         Assert.True(_db.SongCollections.Any());
         Assert.True(_db.AccountPlaylists.Any());
+        Assert.True(_db.Albums.Any());
+        Assert.True(_db.Songs.Any());
 
     }
 }
