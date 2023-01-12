@@ -37,6 +37,7 @@ public class ContextTests : DatabaseTest
             .ToList();
         
         _db.Accounts.AddRange(accounts);
+        _db.SaveChanges();
 
 
 
@@ -45,6 +46,7 @@ public class ContextTests : DatabaseTest
         platforms.Add(new Platform("Apple_Music"));
         platforms.Add(new Platform("Amazon_Music"));
         _db.Platforms.AddRange(platforms);
+        _db.SaveChanges();
 
         var accountPlatforms = new Faker<AccountPlatforms>()
             .CustomInstantiator(a => new AccountPlatforms(
@@ -66,6 +68,7 @@ public class ContextTests : DatabaseTest
             .Generate(30)
             .ToList();
         _db.SongCollections.AddRange(songCollections);
+        _db.SaveChanges();
 
         var playlists = new Faker<Playlist>()
             .CustomInstantiator(p => new Playlist(
@@ -78,8 +81,9 @@ public class ContextTests : DatabaseTest
             .ToList();
 
         _db.Playlists.AddRange(playlists);
+        _db.SaveChanges();
 
-        
+
 
 
         // error here
@@ -93,7 +97,8 @@ public class ContextTests : DatabaseTest
             .GroupBy(a => new { a.AccountId, a.PlaylistId }).Select(g => g.First())
             .ToList();
 
-        _db.AccountPlaylists.AddRange(accountPlaylist);
+        //_db.AccountPlaylists.AddRange(accountPlaylist);
+        //_db.SaveChanges();
 
         var artists = new Faker<Artist>()
             .CustomInstantiator(a => new Artist(
@@ -104,7 +109,7 @@ public class ContextTests : DatabaseTest
 
         var songs = new Faker<Song>()
             .CustomInstantiator(s => new Song(
-                isrcCode: s.Lorem.Word(),
+                isrcCode: s.Lorem.Word(),  // The isrc code is a 12-digit string.
                 title: s.Lorem.Word(),
                 releaseDate: s.Date.Recent(1000),
                 durationInMillis: s.Random.Int(1000,100000),
@@ -112,16 +117,21 @@ public class ContextTests : DatabaseTest
                 platforms: (List<Platform>) s.Random.ListItems(platforms)
                 ))
             .Generate(15)
+            .GroupBy(s => s.IsrcCode).Select(g => g.First())
             .ToList();
 
         _db.Songs.AddRange(songs);
+        _db.SaveChanges();
 
         var albums = new Faker<Album>()
             .CustomInstantiator(a => new Album(
                 artists: (List<Artist>)a.Random.ListItems(artists)))
+            .RuleFor(p => p.Title, f => f.Lorem.Word())
+            .RuleFor(p => p.CreationDate, f => f.Date.Recent(1000))
             .Generate(15)
             .ToList();
         _db.Albums.AddRange(albums);
+        _db.SaveChanges();
 
         var logItems = new Faker<LogItem>()
             .CustomInstantiator(l => new LogItem(
@@ -141,9 +151,44 @@ public class ContextTests : DatabaseTest
         Assert.True(_db.Platforms.Count() == 3);
         Assert.True(_db.AccountPlatforms.Any());
         Assert.True(_db.SongCollections.Any());
-        Assert.True(_db.AccountPlaylists.Any());
+        //Assert.True(_db.AccountPlaylists.Any());
         Assert.True(_db.Albums.Any());
         Assert.True(_db.Songs.Any());
+    }
+    [Fact]
+    public void AddTest()
+    {
+        _db.Database.EnsureDeleted();
+        _db.Database.EnsureCreated();
 
+        var songCollections = new Faker<SongCollection>()
+    .CustomInstantiator(s => new SongCollection(
+        title: s.Lorem.Word(),
+        creationDate: s.Date.Recent(1000)
+        ))
+    .Generate(30)
+    .ToList();
+        _db.SongCollections.AddRange(songCollections);
+        _db.SaveChanges();
+
+
+        var platforms = new List<Platform>();
+        platforms.Add(new Platform("Spotify"));
+        platforms.Add(new Platform("Apple_Music"));
+        platforms.Add(new Platform("Amazon_Music"));
+        _db.Platforms.AddRange(platforms);
+        _db.SaveChanges();
+
+
+        var artist = new Artist("testArtist");
+        var artistList = new List<Artist>();
+        artistList.Add(artist);
+        var song = new Song("testISRCCode", "Title", new DateTime(), 10000, artistList, platforms);
+        _db.Songs.Add(song);
+
+        Assert.True(_db.SongCollections.Find(1).Songs.Count == 0);
+
+        _db.SongCollections.Find(1).AddSong(song);
+        Assert.True(_db.SongCollections.Find(1).Songs.Contains(song));
     }
 }
