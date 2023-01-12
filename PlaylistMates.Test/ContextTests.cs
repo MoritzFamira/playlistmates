@@ -166,7 +166,7 @@ public class ContextTests : DatabaseTest
         title: s.Lorem.Word(),
         creationDate: s.Date.Recent(1000)
         ))
-    .Generate(30)
+    .Generate(1)
     .ToList();
         _db.SongCollections.AddRange(songCollections);
         _db.SaveChanges();
@@ -185,10 +185,13 @@ public class ContextTests : DatabaseTest
         artistList.Add(artist);
         var song = new Song("testISRCCode", "Title", new DateTime(), 10000, artistList, platforms);
         _db.Songs.Add(song);
+        _db.SaveChanges();
 
-        Assert.True(_db.SongCollections.Find(1).Songs.Count == 0);
+        Assert.True(_db.SongCollections.Single(sc => sc.Id == 1).Songs.Count == 0);
 
-        _db.SongCollections.Find(1).AddSong(song);
-        Assert.True(_db.SongCollections.Find(1).Songs.Contains(song));
+        _db.SongCollections.Single(sc => sc.Id == 1).AddSong(song);
+        _db.SaveChanges();
+        Assert.Contains(song, _db.SongCollections.Single(sc => sc.Id == 1).Songs);
+        Assert.True(_db.SongCollections.Single(sc => sc.Id == 1).Songs.Count == 1);
     }
 }
