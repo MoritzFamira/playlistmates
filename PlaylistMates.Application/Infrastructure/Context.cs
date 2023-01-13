@@ -42,11 +42,18 @@ namespace PlaylistMates.Application.Infrastructure
             /* 
              * Manipulates data to only store first letter of enum entry in property Role of AccountPlaylist
              */
-            modelBuilder
+            /*modelBuilder
             .Entity<AccountPlaylist>()
             .Property(a => a.Role)
             .HasConversion(
                     v => string.IsNullOrEmpty(v.ToString()) ? "" : v.ToString().FirstOrDefault().ToString(),
+                    v => (PlaylistRole)Enum.Parse(typeof(PlaylistRole), v)
+                );*/
+            modelBuilder
+            .Entity<AccountPlaylist>()
+            .Property(a => a.Role)
+            .HasConversion(
+                    v => v.ToString().FirstOrDefault().ToString(),
                     v => (PlaylistRole)Enum.Parse(typeof(PlaylistRole), v)
                 );
         }

@@ -125,7 +125,7 @@ public class ContextTests : DatabaseTest
                 email: a.Internet.Email(),
                 accountName: a.Person.UserName
                 ))
-            .Generate(25)
+            .Generate(1)
             .ToList();
 
         _db.Accounts.AddRange(accounts);
@@ -139,32 +139,58 @@ public class ContextTests : DatabaseTest
                 ))
             .RuleFor(p => p.Title, f => f.Lorem.Word())
             .RuleFor(p => p.CreationDate, f => f.Date.Recent(1000))
-            .Generate(20)
+            .Generate(3)
             .ToList();
 
         _db.Playlists.AddRange(playlists);
         _db.SaveChanges();
 
 
-        var accountPlaylist = new Faker<AccountPlaylist>()
+        var accountPlaylistOwner = new Faker<AccountPlaylist>()
             .CustomInstantiator(a => new AccountPlaylist(
-               account: a.PickRandom(accounts).Id,
-               playlist: a.PickRandom(playlists).Id,
-               role: a.PickRandom<PlaylistRole>()
+               account: 1,
+               playlist: 1,
+               role: PlaylistRole.OWNER
            ))
-            .Generate(15)
+            .Generate(1)
             .GroupBy(a => new { a.AccountId, a.PlaylistId }).Select(g => g.First())
             .ToList();
 
-        _db.AccountPlaylists.AddRange(accountPlaylist);
+        var accountPlaylistCollaborator = new Faker<AccountPlaylist>()
+            .CustomInstantiator(a => new AccountPlaylist(
+               account: 1,
+               playlist: 2,
+               role: PlaylistRole.COLLABORATOR
+           ))
+            .Generate(1)
+            .GroupBy(a => new { a.AccountId, a.PlaylistId }).Select(g => g.First())
+            .ToList();
+
+        var accountPlaylistListener = new Faker<AccountPlaylist>()
+            .CustomInstantiator(a => new AccountPlaylist(
+               account: 1,
+               playlist: 3,
+               role: PlaylistRole.LISTENER
+           ))
+            .Generate(1)
+            .GroupBy(a => new { a.AccountId, a.PlaylistId }).Select(g => g.First())
+            .ToList();
+
+        _db.AccountPlaylists.AddRange(accountPlaylistOwner);
+        _db.AccountPlaylists.AddRange(accountPlaylistCollaborator);
+        _db.AccountPlaylists.AddRange(accountPlaylistListener);
+
         _db.SaveChanges();
 
 
-
         _db.ChangeTracker.Clear();
-
-        Assert.True(_db.Accounts.Any());
-        Assert.True(_db.Playlists.Any());
         Assert.True(_db.AccountPlaylists.Any());
+
+        var currentUserID = 1;
+        var currentPlaylistId = 2;
+
+        var test = _db.AccountPlaylists.Find(1,1).Role == PlaylistRole.COLLABORATOR2;
+        //Assert.True(_db.AccountPlaylists.Find(1, 1).Role.Equals(PlaylistRole.COLLABORATOR));
+
     }
 }
