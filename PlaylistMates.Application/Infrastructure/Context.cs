@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using PlaylistMates.Application.Model;
 
 namespace PlaylistMates.Application.Infrastructure
@@ -41,20 +37,18 @@ namespace PlaylistMates.Application.Infrastructure
             // modelBuilder.Entity<AccountPlaylist>().Property(a => a.Role).HasConversion<string>(); -- removed due to custom value converter
             modelBuilder.Entity<AccountPlaylist>().Property(a => a.Role).HasDefaultValue(PlaylistRole.LISTENER);
 
-            // composite key for the AccountPlaylist entity/relation
-            modelBuilder.Entity<AccountPlaylist>().HasKey(a => new { a.PlaylistId, a.AccountId });
-            modelBuilder.Entity<AccountPlatforms>().HasKey(a => new { a.AccountId, a.PlatformId });
+            // unique index for the AccountPlaylist entity/relation
+            modelBuilder.Entity<AccountPlaylist>().HasIndex(a => new { a.PlaylistId, a.AccountId }).IsUnique();
+            modelBuilder.Entity<AccountPlatforms>().HasIndex(a => new { a.PlatformId, a.AccountId }).IsUnique();
+
 
             modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-            /* 
-             * Manipulates data to only store first letter of enum entry in property Role of AccountPlaylist
-             */
             modelBuilder
             .Entity<AccountPlaylist>()
             .Property(a => a.Role)
             .HasConversion(
-                    v => string.IsNullOrEmpty(v.ToString()) ? "" : v.ToString().FirstOrDefault().ToString(),
+                    v => v.ToString().FirstOrDefault().ToString(),
                     v => (PlaylistRole)Enum.Parse(typeof(PlaylistRole), v)
                 );
         }

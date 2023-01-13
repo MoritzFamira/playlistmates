@@ -8,29 +8,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlaylistMates.Application.Model
 {
-    public class AccountPlaylist
+    public class AccountPlaylist : IEntity<int>
     {
 
         /*
          * This entity represents the m:n relationship between Account and Playlist.
          * It is an explicit relationship since the extra column "Role" needed could not be implemented otherwise.
         */
-        public AccountPlaylist(int playlist, int account, PlaylistRole role)
+        public AccountPlaylist(Playlist playlist, Account account, PlaylistRole role) 
         {
-            PlaylistId = playlist;
-            AccountId = account;
+            Playlist = playlist;
+            PlaylistId = playlist.Id;
+            Account = account;
+            AccountId = account.Id;
             Role = role;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected AccountPlaylist() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-        [Column(Order = 1)]
-        [ForeignKey("Playlist")]
-        public int PlaylistId { private set; get; }
-        [Column(Order = 2)]
-        [ForeignKey("Account")]
-        public int AccountId { private set; get; }
+        public int Id { get; set; }
+        public Playlist Playlist { get;  set; }
+        public int PlaylistId { get; set; }
+        public Account Account { get;  set; }
+        public int AccountId { get; set; }
 
         public PlaylistRole Role { get; set; }
     }
