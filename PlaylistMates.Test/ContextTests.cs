@@ -271,11 +271,8 @@ public class ContextTests : DatabaseTest
         _db.ChangeTracker.Clear();
         Assert.True(_db.AccountPlaylists.Any());
 
-        var currentUserID = 1;
-        var currentPlaylistId = 2;
-
-        var test = _db.AccountPlaylists.Find(1,1).Role == PlaylistRole.COLLABORATOR2;
-        //Assert.True(_db.AccountPlaylists.Find(1, 1).Role.Equals(PlaylistRole.COLLABORATOR));
+        _db.AccountPlaylists.Single(ap => ap.AccountId);
+        )
 
     }
 }
