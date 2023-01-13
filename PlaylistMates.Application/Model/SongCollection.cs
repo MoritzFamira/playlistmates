@@ -13,6 +13,12 @@ namespace PlaylistMates.Application.Model
             Title = title;
             CreationDate = creationDate;
         }
+        public SongCollection(string title, DateTime creationDate, List<Song> songs)
+        {
+            Title = title;
+            CreationDate = creationDate;
+            _songs = songs;
+        }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected SongCollection() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
