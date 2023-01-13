@@ -60,6 +60,7 @@ public class ContextTests : DatabaseTest
         _db.AccountPlatforms.AddRange(accountPlatforms);
         _db.SaveChanges();
 
+        // no songs in constructor
         var songCollections = new Faker<SongCollection>()
             .CustomInstantiator(s => new SongCollection(
                 title: s.Lorem.Word(),
@@ -87,6 +88,7 @@ public class ContextTests : DatabaseTest
 
 
         // error here
+        // the data is correctly saved but when retreiving the data an exception is thrown
         var accountPlaylist = new Faker<AccountPlaylist>()
             .CustomInstantiator(a => new AccountPlaylist(
                account: a.PickRandom(accounts).Id,
