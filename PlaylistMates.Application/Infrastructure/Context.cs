@@ -57,6 +57,7 @@ namespace PlaylistMates.Application.Infrastructure
                     v => (PlaylistRole)Enum.Parse(typeof(PlaylistRole), v)
                 );
         }
+        
         }
     }
 

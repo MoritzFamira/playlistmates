@@ -10,7 +10,7 @@ namespace PlaylistMates.Application.Model
     public class Song : IEntity<string>
     {
         // TODO: check whether two constructors are needed
-        public Song(string isrcCode, string title, DateTime releaseDate, int durationInMillis, ICollection<Artist> artists, ICollection<Platform> platforms)
+        public Song(string isrcCode, string title, DateTime releaseDate, int durationInMillis, List<Artist> artists, List<Platform> platforms)
         {
             // id is the isrc code of the song
             IsrcCode = isrcCode;
@@ -31,8 +31,8 @@ namespace PlaylistMates.Application.Model
         public string Titel { get; set; }  // name of the song
         public DateTime ReleaseDate { get; set; }  
         public int DurationInMillis { get; set; }   
-        public ICollection<Artist> Artists { get; set; }
-        public ICollection<Platform> Platforms { get; set; }
+        public List<Artist> Artists { get; set; }
+        public List<Platform> Platforms { get; set; }
         protected List<SongCollection> _songCollections = new();
         public IReadOnlyCollection<SongCollection> SongCollections => _songCollections;
         public string Id => IsrcCode;

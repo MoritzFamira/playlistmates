@@ -14,9 +14,8 @@ namespace PlaylistMates.Application.Model
         protected LogItem() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         
-        public LogItem(DateTime timeStamp, Account account, Action action)
+        public LogItem(Account account, Action action)
         { 
-            TimeStamp = timeStamp;
             Account = account;
             Action = action;
         }
