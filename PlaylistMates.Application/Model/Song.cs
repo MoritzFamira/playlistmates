@@ -9,7 +9,6 @@ namespace PlaylistMates.Application.Model
 
     public class Song : IEntity<string>
     {
-        // TODO: check whether two constructors are needed
         public Song(string isrcCode, string title, DateTime releaseDate, int durationInMillis, List<Artist> artists, List<Platform> platforms)
         {
             // id is the isrc code of the song

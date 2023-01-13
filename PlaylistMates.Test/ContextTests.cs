@@ -50,8 +50,8 @@ public class ContextTests : DatabaseTest
 
         var accountPlatforms = new Faker<AccountPlatforms>()
             .CustomInstantiator(a => new AccountPlatforms(
-                account: a.PickRandom(accounts).Id,
-                platform: a.PickRandom(platforms).Id,
+                account: a.PickRandom(accounts),
+                platform: a.PickRandom(platforms),
                 authtoken: a.Internet.Password() // password is used instead of an authtoken for simplicity
                 ))
             .Generate(15)
@@ -60,7 +60,6 @@ public class ContextTests : DatabaseTest
         _db.AccountPlatforms.AddRange(accountPlatforms);
         _db.SaveChanges();
 
-        // no songs in constructor
         var songCollections = new Faker<SongCollection>()
             .CustomInstantiator(s => new SongCollection(
                 title: s.Lorem.Word(),
@@ -91,16 +90,16 @@ public class ContextTests : DatabaseTest
         // the data is correctly saved but when retreiving the data an exception is thrown
         var accountPlaylist = new Faker<AccountPlaylist>()
             .CustomInstantiator(a => new AccountPlaylist(
-               account: a.PickRandom(accounts).Id,
-               playlist: a.PickRandom(playlists).Id,
+               account: a.PickRandom(accounts),
+               playlist: a.PickRandom(playlists),
                role: a.PickRandom<PlaylistRole>()
            ))
             .Generate(15)
             .GroupBy(a => new { a.AccountId, a.PlaylistId }).Select(g => g.First())
             .ToList();
 
-        //_db.AccountPlaylists.AddRange(accountPlaylist);
-        //_db.SaveChanges();
+        _db.AccountPlaylists.AddRange(accountPlaylist);
+        _db.SaveChanges();
 
         var artists = new Faker<Artist>()
             .CustomInstantiator(a => new Artist(
@@ -153,7 +152,7 @@ public class ContextTests : DatabaseTest
         Assert.True(_db.Platforms.Count() == 3);
         Assert.True(_db.AccountPlatforms.Any());
         Assert.True(_db.SongCollections.Any());
-        //Assert.True(_db.AccountPlaylists.Any());
+        Assert.True(_db.AccountPlaylists.Any());
         Assert.True(_db.Albums.Any());
         Assert.True(_db.Songs.Any());
     }
@@ -233,8 +232,8 @@ public class ContextTests : DatabaseTest
 
         var accountPlaylistOwner = new Faker<AccountPlaylist>()
             .CustomInstantiator(a => new AccountPlaylist(
-               account: 1,
-               playlist: 1,
+               account: a.PickRandom(accounts),
+               playlist: playlists[0],
                role: PlaylistRole.OWNER
            ))
             .Generate(1)
@@ -243,8 +242,8 @@ public class ContextTests : DatabaseTest
 
         var accountPlaylistCollaborator = new Faker<AccountPlaylist>()
             .CustomInstantiator(a => new AccountPlaylist(
-               account: 1,
-               playlist: 2,
+               account: a.PickRandom(accounts),
+               playlist: playlists[1],
                role: PlaylistRole.COLLABORATOR
            ))
             .Generate(1)
@@ -253,8 +252,8 @@ public class ContextTests : DatabaseTest
 
         var accountPlaylistListener = new Faker<AccountPlaylist>()
             .CustomInstantiator(a => new AccountPlaylist(
-               account: 1,
-               playlist: 3,
+               account: a.PickRandom(accounts),
+               playlist: playlists[2],
                role: PlaylistRole.LISTENER
            ))
             .Generate(1)
@@ -268,11 +267,12 @@ public class ContextTests : DatabaseTest
         _db.SaveChanges();
 
 
-        _db.ChangeTracker.Clear();
         Assert.True(_db.AccountPlaylists.Any());
 
-        _db.AccountPlaylists.Single(ap => ap.AccountId);
-        )
+        Assert.True(_db.AccountPlaylists.Single(ap => ap.AccountId == 1 && ap.PlaylistId == 1).Role == PlaylistRole.OWNER);
+        Assert.True(_db.AccountPlaylists.Single(ap => ap.AccountId == 1 && ap.PlaylistId == 2).Role == PlaylistRole.COLLABORATOR);
+        Assert.True(_db.AccountPlaylists.Single(ap => ap.AccountId == 1 && ap.PlaylistId == 3).Role == PlaylistRole.LISTENER);
 
     }
+
 }
