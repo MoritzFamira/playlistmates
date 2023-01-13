@@ -7,7 +7,7 @@ namespace PlaylistMates.Application.Infrastructure
     public class Context : DbContext
     {
         public Context(DbContextOptions opt) : base(opt) { }
-
+        
         public DbSet<SongCollection> SongCollections => Set<SongCollection>();
         public DbSet<Album> Albums => Set<Album>();
         public DbSet<Playlist> Playlists => Set<Playlist>();
@@ -17,6 +17,14 @@ namespace PlaylistMates.Application.Infrastructure
         public DbSet<LogItem> LogItems => Set<LogItem>();
         public DbSet<AccountPlaylist> AccountPlaylists => Set<AccountPlaylist>();
         public DbSet<AccountPlatforms> AccountPlatforms => Set<AccountPlatforms>();
+
+        public Repository<SongCollection, int> SongCollectionRepository => new Repository<SongCollection, int>(this);
+        public Repository<Album, int> AlbumRepository => new Repository<Album, int>(this);
+        public PlaylistRepository PlaylistRepository => new PlaylistRepository(this);
+        public Repository<Song, string> SongRepository => new Repository<Song, string>(this);
+        public AccountRepository AccountRepository => new AccountRepository(this);
+        //public Repository<Platform, int> PlatformRepository => new Repository<Platform, int>(this);
+        public Repository<LogItem, int> LogItemRepository => new Repository<LogItem, int>(this);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

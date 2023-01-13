@@ -17,7 +17,6 @@ public class ContextTests : DatabaseTest
     {
         _db.Database.EnsureDeleted();
         _db.Database.EnsureCreated();
-        
     }
 
     [Fact]
