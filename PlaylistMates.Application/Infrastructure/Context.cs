@@ -24,7 +24,7 @@ namespace PlaylistMates.Application.Infrastructure
 
         public Repository<SongCollection, int> SongCollectionRepository => new Repository<SongCollection, int>(this);
         public Repository<Album, int> AlbumRepository => new Repository<Album, int>(this);
-        public Repository<Playlist, int> PlaylistRepository => new Repository<Playlist, int>(this);
+        public PlaylistRepository PlaylistRepository => new PlaylistRepository(this);
         public Repository<Song, string> SongRepository => new Repository<Song, string>(this);
         public AccountRepository AccountRepository => new AccountRepository(this);
         //public Repository<Platform, int> PlatformRepository => new Repository<Platform, int>(this);
