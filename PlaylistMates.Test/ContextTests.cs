@@ -9,6 +9,9 @@ using Xunit;
 using Microsoft.EntityFrameworkCore;
 using PlaylistMates.Application.Model;
 
+//Unit test for repository not included as discussed in lesson
+
+
 [Collection("Sequential")] // A file database does not support parallel test execution.
 public class ContextTests : DatabaseTest
 {
