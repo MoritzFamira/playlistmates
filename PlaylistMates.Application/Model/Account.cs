@@ -29,8 +29,8 @@ namespace PlaylistMates.Application.Model
         public string Email { get; private set; }
         public string AccountName { get; set; }
         public string Salt { get; private set; }
-        public List<Platform> Platforms { get;  } = new();
-        public List<Playlist> Playlists { get;  } = new();
+        public List<Platform> Platforms { get; } = new();
+        public List<Playlist> Playlists { get; } = new();
         public List<AccountPlaylist> AccountPlaylists { get;  } = new();
         public List<AccountPlatforms> AccountPlatforms { get; } = new();
 
