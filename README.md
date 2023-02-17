@@ -14,7 +14,7 @@ Are you tired of constantly switching between music platforms just to access you
 
 ## Tech Stack
 
-**Client:** Svelte Kit
+**Client:** Vue.js
 
 **Server:** .NET
 

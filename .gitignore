@@ -2,7 +2,36 @@
 **/.vscode
 **/bin
 **/obj
-*.db*
+PlaylistMates.Client/*.db*
 **/node_modules
 **/dist
 **/.idea
+
+# Logs
+PlaylistMates.Client/logs
+PlaylistMates.Client/*.log
+PlaylistMates.Client/npm-debug.log*
+PlaylistMates.Client/yarn-debug.log*
+PlaylistMates.Client/yarn-error.log*
+PlaylistMates.Client/pnpm-debug.log*
+PlaylistMates.Client/lerna-debug.log*
+
+PlaylistMates.Client/node_modules
+PlaylistMates.Client/.DS_Store
+PlaylistMates.Client/dist
+PlaylistMates.Client/dist-ssr
+PlaylistMates.Client/coverage
+PlaylistMates.Client/*.local
+
+PlaylistMates.Client/cypress/videos/
+PlaylistMates.Client/cypress/screenshots/
+
+# Editor directories and files
+PlaylistMates.Client/.vscode/*
+PlaylistMates.Client/!.vscode/extensions.json
+PlaylistMates.Client/.idea
+PlaylistMates.Client/*.suo
+PlaylistMates.Client/*.ntvs*
+PlaylistMates.Client/*.njsproj
+PlaylistMates.Client/*.sln
+PlaylistMates.Client/*.sw?

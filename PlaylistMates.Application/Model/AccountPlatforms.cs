@@ -10,22 +10,22 @@ namespace PlaylistMates.Application.Model
 {
     public class AccountPlatforms
     {
-        public AccountPlatforms(int account, int platform, string authtoken)
+        public AccountPlatforms(Account account, Platform platform, string authtoken)
         {
-            PlatformId = platform;
-            AccountId = account;
+            Platform = platform;
+            Account = account;
+            PlatformId = platform.Id;
+            AccountId = account.Id;
             Authtoken = authtoken;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected AccountPlatforms() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-        [Column(Order = 1)]
-        [ForeignKey("Account")]
-        public int AccountId { private set; get; }
-        [Column(Order = 2)]
-        [ForeignKey("Platform")]
-        public int PlatformId { private set; get; }
+        public int Id { get; set; }
+        public Account Account { get; set; }
+        public int AccountId { get; set; }
+        public Platform Platform { get; set; }
+        public int PlatformId { get; set; }
 
         public string Authtoken { get; set; }
     }

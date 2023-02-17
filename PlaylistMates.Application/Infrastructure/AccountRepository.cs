@@ -14,7 +14,7 @@ public class AccountRepository : Repository<Account, int>
         _accounts = context.Set<Account>();
     }
 
-    public void UpdateName()
+    public void UpdateName(string accountName)
     {
         // check if accountName exists etc
     }
