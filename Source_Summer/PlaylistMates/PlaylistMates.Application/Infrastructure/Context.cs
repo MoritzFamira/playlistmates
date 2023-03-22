@@ -47,10 +47,7 @@ namespace PlaylistMates.Application.Infrastructure
             modelBuilder
             .Entity<AccountPlaylist>()
             .Property(a => a.Role)
-            .HasConversion(
-                    v => v.ToString().FirstOrDefault().ToString(),
-                    v => (PlaylistRole)Enum.Parse(typeof(PlaylistRole), v)
-                );
+            .HasConversion<string>();
         }
         
         }
