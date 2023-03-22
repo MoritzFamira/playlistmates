@@ -1,8 +1,43 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using PlaylistMates.Application.Infrastructure;
+using PlaylistMates.Application.Model;
+using PlaylistMates.Webapi.Extensions;
+using PlaylistMates.Webapi.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddDbContext<Context>(options =>
+    options.UseOracle(builder.Configuration["AppSettings:Database"]));
+string jwtSecret = builder.Configuration["AppSettings:Secret"] ?? AuthService.GenerateRandom(1024);
+
+builder.Services.AddHttpContextAccessor();
+
+// JWT aktivieren, aber nicht standardm��ig aktivieren. Daher muss beim Controller
+//     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+// geschrieben werden. Wird nur eine API bereitgestellt, kann dieser Parameter auf
+// true gesetzt und Cookies nat�rlich deaktiviert werden.
+builder.Services.AddJwtAuthentication(jwtSecret, setDefault: true);
+builder.Services.AddScoped<AuthService>(services =>
+    new AuthService(jwtSecret, services.GetRequiredService<Context>()));
+builder.Services.AddScoped<IAuthorizationHandler, PlaylistRoleHandler>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("PlaylistOwnerPolicy", policy =>
+        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.OWNER)));
+    options.AddPolicy("PlaylistCollaboratorPolicy", policy =>
+        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR)));
+    options.AddPolicy("PlaylistListenerPolicy", policy =>
+        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.LISTENER)));
+});
+
+// Juston_Von@gmail.com,pw:1234, Collaborator at 41
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -18,6 +53,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
