@@ -22,6 +22,47 @@ public class ContextTests : DatabaseTest
         _db.Database.EnsureCreated();
     }
 
+
+    public static string GenerateRandom(int length = 128)
+    {
+        // Salt erzeugen.
+        byte[] salt = new byte[length / 8];
+        using (System.Security.Cryptography.RandomNumberGenerator rnd =
+            System.Security.Cryptography.RandomNumberGenerator.Create())
+        {
+            rnd.GetBytes(salt);
+        }
+        return Convert.ToBase64String(salt);
+    }
+
+    /// <summary>
+    /// Berechnet den HMACSHA256 Wert des Passwortes mit dem übergebenen Salt.
+    /// </summary>
+    /// <param name="password">Base64 Codiertes Passwort.</param>
+    /// <param name="salt">Base64 Codiertes Salt.</param>
+    /// <returns></returns>
+    protected static string CalculateHash(string password, string salt)
+    {
+        if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(salt))
+        {
+            throw new ArgumentException("Invalid Salt or Passwort.");
+        }
+        byte[] saltBytes = Convert.FromBase64String(salt);
+        byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(password);
+
+        System.Security.Cryptography.HMACSHA256 myHash =
+            new System.Security.Cryptography.HMACSHA256(saltBytes);
+
+        byte[] hashedData = myHash.ComputeHash(passwordBytes);
+
+        // Das Bytearray wird als Hexstring zurückgegeben.
+        string hashedPassword = Convert.ToBase64String(hashedData);
+        return hashedPassword;
+    }
+
+
+
+
     [Fact]
     public void SeedTest()
     {
@@ -29,11 +70,13 @@ public class ContextTests : DatabaseTest
         _db.Database.EnsureCreated();
 
         Randomizer.Seed = new Random(1335);
-
+        string salt = GenerateRandom();
         var accounts = new Faker<Account>()
             .CustomInstantiator(a => new Account(
                 email: a.Internet.Email(),
-                accountName: a.Person.UserName
+                accountName: a.Person.UserName,
+                salt: salt,
+                hashedPassword: CalculateHash("1234",salt)
                 ))
             .Generate(25)
             .ToList();
@@ -206,10 +249,13 @@ public class ContextTests : DatabaseTest
 
         Randomizer.Seed = new Random(1335);
 
+        string salt = GenerateRandom();
         var accounts = new Faker<Account>()
             .CustomInstantiator(a => new Account(
                 email: a.Internet.Email(),
-                accountName: a.Person.UserName
+                accountName: a.Person.UserName,
+                salt: salt,
+                hashedPassword: CalculateHash("1234", salt)
                 ))
             .Generate(1)
             .ToList();
