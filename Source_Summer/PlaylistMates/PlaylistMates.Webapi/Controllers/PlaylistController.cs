@@ -22,11 +22,11 @@ namespace PlaylistMates.Webapi.Controllers
         }
 
         [HttpGet("{playlistId}")]
-        // [Authorize(Policy = "PlaylistOwnerPolicy")]
-        [Authorize(Policy = "PlaylistCollaboratorPolicy")]
-        // [Authorize(Policy = "PlaylistListenerPolicy")]
+        [Authorize(Policy = "PlaylistAnyRole")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<Playlist>> GetPlaylist(int playlistId)
         {
             // Navigationen in der Entity Klasse Pupil können über 

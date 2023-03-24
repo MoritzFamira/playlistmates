@@ -27,22 +27,16 @@ builder.Services.AddScoped<IAuthorizationHandler, PlaylistRoleHandler>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("PlaylistOwnerPolicy", policy =>
-        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.OWNER)));
+        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.OWNER })));
     options.AddPolicy("PlaylistCollaboratorPolicy", policy =>
-        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR)));
+        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.COLLABORATOR })));
     options.AddPolicy("PlaylistListenerPolicy", policy =>
-        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.LISTENER)));
-    //options.AddPolicy("PlaylistAnyRole", policy =>
-    //{
-    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.LISTENER));
-    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR));
-    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.OWNER));
-    //});
-    //options.AddPolicy("PlaylistCollaboratorOrOwner", policy =>
-    //{
-    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR));
-    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.OWNER));
-    //});
+        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.LISTENER })));
+    options.AddPolicy("PlaylistAnyRole", policy =>
+        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.LISTENER, PlaylistRole.COLLABORATOR, PlaylistRole.OWNER })));
+    options.AddPolicy("PlaylistCollaboratorOrOwner", policy =>
+        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.COLLABORATOR, PlaylistRole.OWNER })));
+
 });
 
 // Juston_Von@gmail.com,pw:1234, Collaborator at 41

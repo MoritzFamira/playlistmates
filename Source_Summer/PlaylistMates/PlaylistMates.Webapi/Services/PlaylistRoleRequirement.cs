@@ -6,12 +6,12 @@ namespace PlaylistMates.Webapi.Services
 {
     public class PlaylistRoleRequirement : IAuthorizationRequirement
     {
-        public PlaylistRole Role { get; }
+        public List<PlaylistRole> Roles { get; }
         public int PlaylistId { get; }
 
-        public PlaylistRoleRequirement(PlaylistRole role)
+        public PlaylistRoleRequirement(List<PlaylistRole> roles)
         {
-            Role = role;
+            Roles = roles;
         }
     }
     public class PlaylistRoleHandler : AuthorizationHandler<PlaylistRoleRequirement>
@@ -42,10 +42,14 @@ namespace PlaylistMates.Webapi.Services
                     Console.WriteLine("Read DB");
                     // TODO: Instead of calling DB, create singleton cache
                     var role = _context.AccountPlaylists.FirstOrDefault(a => a.Account.Email == userEmail && a.PlaylistId == playlistIdValue)?.Role;
-                    if (role == requirement.Role)
+                    foreach (var item in requirement.Roles)
                     {
-                        context.Succeed(requirement);
+                        if (role == item)
+                        {
+                            context.Succeed(requirement);
+                        }
                     }
+
                 }
             }
 
