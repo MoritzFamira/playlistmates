@@ -39,7 +39,7 @@ namespace PlaylistMates.Webapi.Services
                     {
                         return Task.CompletedTask;
                     }
-
+                    Console.WriteLine("Read DB");
                     var role = _context.AccountPlaylists.FirstOrDefault(a => a.Account.Email == userEmail && a.PlaylistId == playlistIdValue)?.Role;
                     if (role == requirement.Role)
                     {
