@@ -40,6 +40,7 @@ namespace PlaylistMates.Webapi.Services
                         return Task.CompletedTask;
                     }
                     Console.WriteLine("Read DB");
+                    // TODO: Instead of calling DB, create singleton cache
                     var role = _context.AccountPlaylists.FirstOrDefault(a => a.Account.Email == userEmail && a.PlaylistId == playlistIdValue)?.Role;
                     if (role == requirement.Role)
                     {
