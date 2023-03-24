@@ -32,17 +32,17 @@ builder.Services.AddAuthorization(options =>
         policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR)));
     options.AddPolicy("PlaylistListenerPolicy", policy =>
         policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.LISTENER)));
-    options.AddPolicy("PlaylistAnyRole", policy =>
-    {
-        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.LISTENER));
-        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR));
-        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.OWNER));
-    });
-    options.AddPolicy("PlaylistCollaboratorOrOwner", policy =>
-    {
-        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR));
-        policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.OWNER));
-    });
+    //options.AddPolicy("PlaylistAnyRole", policy =>
+    //{
+    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.LISTENER));
+    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR));
+    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.OWNER));
+    //});
+    //options.AddPolicy("PlaylistCollaboratorOrOwner", policy =>
+    //{
+    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.COLLABORATOR));
+    //    policy.Requirements.Add(new PlaylistRoleRequirement(PlaylistRole.OWNER));
+    //});
 });
 
 // Juston_Von@gmail.com,pw:1234, Collaborator at 41
