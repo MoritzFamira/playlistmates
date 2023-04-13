@@ -7,7 +7,7 @@ namespace PlaylistMates.Application.Model
 {
 
 
-    public class Song : IEntity<string>
+    public class Song : IEntity<int>
     {
         public Song(string isrcCode, string title, DateTime releaseDate, int durationInMillis, List<Artist> artists, List<Platform> platforms)
         {
@@ -26,7 +26,8 @@ namespace PlaylistMates.Application.Model
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string IsrcCode { get; private set; }  // ISRC Code with ID (standardized with iso 3901)
+        public int Id { get; private set; }
+        public string IsrcCode { get; set; }  // ISRC Code with ID (standardized with iso 3901)
         public string Titel { get; set; }  // name of the song
         public DateTime ReleaseDate { get; set; }  
         public int DurationInMillis { get; set; }   
@@ -34,7 +35,7 @@ namespace PlaylistMates.Application.Model
         public List<Platform> Platforms { get; set; }
         protected List<SongCollection> _songCollections = new();
         public IReadOnlyCollection<SongCollection> SongCollections => _songCollections;
-        public string Id => IsrcCode;
+
 
         public void AddSongCollection(SongCollection songCollection)
         {

@@ -21,7 +21,7 @@ namespace PlaylistMates.Application.Infrastructure
         public Repository<SongCollection, int> SongCollectionRepository => new Repository<SongCollection, int>(this);
         public Repository<Album, int> AlbumRepository => new Repository<Album, int>(this);
         public PlaylistRepository PlaylistRepository => new PlaylistRepository(this);
-        public Repository<Song, string> SongRepository => new Repository<Song, string>(this);
+        public Repository<Song, int> SongRepository => new Repository<Song, int>(this);
         public AccountRepository AccountRepository => new AccountRepository(this);
         //public Repository<Platform, int> PlatformRepository => new Repository<Platform, int>(this);
         public Repository<LogItem, int> LogItemRepository => new Repository<LogItem, int>(this);
@@ -41,6 +41,7 @@ namespace PlaylistMates.Application.Infrastructure
             modelBuilder.Entity<AccountPlaylist>().HasIndex(a => new { a.PlaylistId, a.AccountId }).IsUnique();
             modelBuilder.Entity<AccountPlatforms>().HasIndex(a => new { a.PlatformId, a.AccountId }).IsUnique();
 
+            modelBuilder.Entity<Song>().HasIndex(s => s.IsrcCode).IsUnique();
 
             modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
