@@ -71,5 +71,44 @@ namespace PlaylistMates.Webapi.Controllers
             if (song is null) { return NotFound(); }
             return Ok(song);
         }
+
+        [HttpPut("{guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> UpdateSong(Guid guid, SongDto songDto)
+        {
+            var song = await _context.Songs.FindAsync(guid);
+            if (song == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(songDto, song);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> DeleteSong(Guid guid)
+        {
+            var song = await _context.Songs.FindAsync(guid);
+            if (song == null)
+            {
+                return NotFound();
+            }
+
+            _context.Songs.Remove(song);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+    }
     }
 }
