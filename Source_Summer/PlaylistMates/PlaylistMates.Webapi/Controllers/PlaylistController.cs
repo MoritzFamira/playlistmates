@@ -37,5 +37,13 @@ namespace PlaylistMates.Webapi.Controllers
             if (playlist == null) { return NotFound(); }
             return playlist;
         }
+
+        //[HttpPost]
+        //[ProducesResponseType(StatusCodes.Status201Created)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult<Playlist>> PostPlaylist()
+        //{
+
+        //}
     }
 }

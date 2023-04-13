@@ -4,11 +4,20 @@ using PlaylistMates.Application.Model;
 
 namespace PlaylistMates.Webapi.Services
 {
+    /// <summary>
+    /// PlaylistRequirement storing Roles, one of which is required and PlaylistId of the playlist that should be checked.
+    /// </summary>
+    /// <seealso href="https://learn.microsoft.com/en-us/aspnet/core/security/authorization/policies?view=aspnetcore-6.0"/>
     public class PlaylistRoleRequirement : IAuthorizationRequirement
     {
         public List<PlaylistRole> Roles { get; }
         public int PlaylistId { get; }
 
+        /// <summary>
+        /// Constructor taking roles
+        /// </summary>
+        /// <param name="roles">List of type PlaylistRole, any role that matches will be allowed</param>
+        /// <example><c>new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.COLLABORATOR, PlaylistRole.OWNER })</c></example>
         public PlaylistRoleRequirement(List<PlaylistRole> roles)
         {
             Roles = roles;
@@ -41,6 +50,7 @@ namespace PlaylistMates.Webapi.Services
                     }
                     Console.WriteLine("Read DB");
                     // TODO: Instead of calling DB, create singleton cache
+                    // When implementing cache, do not depend on it and keep calling db if cache not available
                     var role = _context.AccountPlaylists.FirstOrDefault(a => a.Account.Email == userEmail && a.PlaylistId == playlistIdValue)?.Role;
                     foreach (var item in requirement.Roles)
                     {
