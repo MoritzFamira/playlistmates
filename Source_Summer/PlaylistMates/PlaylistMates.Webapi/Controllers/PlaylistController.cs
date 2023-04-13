@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlaylistMates.Webapi.Services;
@@ -32,9 +33,15 @@ namespace PlaylistMates.Webapi.Controllers
             // Navigationen in der Entity Klasse Pupil können über 
             // [System.Text.Json.Serialization.JsonIgnore] ausgeschlossen werden.
             Playlist playlist = await _context.Playlists.FindAsync(playlistId);
+            // get the name of the user currently logged in
 
             // TODO: This currently basically outputs our whole schema because navigation properties have not been set to jsonignore
             if (playlist == null) { return NotFound(); }
+            if (User.FindFirstValue(ClaimTypes.Name) != null)
+            {
+                _logger.LogInformation("{User} got playlist with id {Id} at {DT}",User.FindFirstValue(ClaimTypes.Name),playlistId,DateTime.UtcNow.ToLongTimeString());
+            }
+            _logger.LogInformation("Non-user got playlist with id {Id} at {DT}",playlistId,DateTime.UtcNow.ToLongTimeString());
             return playlist;
         }
 
