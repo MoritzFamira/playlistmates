@@ -10,10 +10,6 @@ using PlaylistMates.Application.Model;
 
 namespace PlaylistMates.Webapi.Services
 {
-    /// <summary>
-    /// TODO: Die Methode CheckUserAndGetRole() anpassen. Eventuell ist noch der DbContext
-    /// im Konstruktor zu ergänzen, damit das Service Zugriff auf die Datenbank hat.
-    /// </summary>
     public class AuthService
     {
         private readonly Context _context;
@@ -34,13 +30,12 @@ namespace PlaylistMates.Webapi.Services
         }
 
         /// <summary>
-        /// Prüft, ob der übergebene User existiert und gibt seine Rolle zurück.
-        /// TODO: Anpassen der Logik an die eigenen Erfordernisse.
+        /// Prüft, ob der übergebene User existiert und ob das passwort korrekt ist.
         /// </summary>
         /// <param name="credentials">Benutzername und Passwort, die geprüft werden.</param>
         /// <returns>
-        /// Rolle, wenn der Benutzer authentifiziert werden konnte.
-        /// Null, wenn der Benutzer nicht authentifiziert werden konnte.
+        /// True, wenn der user existiert und die Passwörter übereinstimmen
+        /// False, wenn der user nicht existiert oder das Passwort nicht stimmt.
         /// </returns>
         protected virtual async Task<bool> CheckUser(UserCredentials credentials)
         {
@@ -61,24 +56,17 @@ namespace PlaylistMates.Webapi.Services
         /// </summary>
         /// <param name="credentials"></param>
         /// <returns></returns>
-        /*
-        public async Task<User> CreateUser(UserCredentials credentials)
+        public async Task<Account> CreateUser(UserCredentials credentials)
         {
             string salt = GenerateRandom();
             // Den neuen Userdatensatz erstellen
-            User newUser = new User
-            {
-                U_Name = credentials.Username,
-                U_Salt = salt,
-                U_Hash = CalculateHash(credentials.Password, salt),
-            };
-            // Die Rolle des Users zuweisen
-            newUser.U_Role = "";
-            db.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-            await db.SaveChangesAsync();
+            Account newUser = new Account(credentials.Email, accountName, salt, CalculateHash(credentials.Password, salt));
+
+            _context.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            await _context.SaveChangesAsync();
             return newUser;
         }
-        */
+        
 
         /// <summary>
         /// Liest die Details des übergebenen Users aus der Datenbank.

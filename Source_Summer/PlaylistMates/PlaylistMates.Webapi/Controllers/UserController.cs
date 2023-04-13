@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using PlaylistMates.Application.Model;
 
-namespace AuthenticationDemo.Controllers
+namespace PlaylistMates.Webapi.Controllers
 {
     /// <summary>
     /// Controller zum Aufrufen der Authentication Services:
@@ -80,23 +81,21 @@ namespace AuthenticationDemo.Controllers
         /// </summary>
         /// <param name="user">Daten aus dem Registrierungsformular, die angelegt werden.</param>
         /// <returns></returns>
-        /*
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<User>> Register(UserDto user)
+        public async Task<ActionResult<Account>> Register(AccountDto account)
         {
-            User newUser;
+            Account newAccount;
             try
             {
-                newUser = await _authService.CreateUser(user);
+                newAccount = await _authService.CreateUser(account);
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
             {
                 return Conflict();
             }
-            return Ok(newUser);
+            return Ok(newAccount);
         }
-        */
     }
 }
