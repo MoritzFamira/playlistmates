@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using PlaylistMates.Application.Model;
+using PlaylistMates.Application.Dto;
 
 namespace PlaylistMates.Webapi.Controllers
 {
@@ -81,21 +82,21 @@ namespace PlaylistMates.Webapi.Controllers
         /// </summary>
         /// <param name="user">Daten aus dem Registrierungsformular, die angelegt werden.</param>
         /// <returns></returns>
-        [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<Account>> Register(AccountDto account)
-        {
-            Account newAccount;
-            try
-            {
-                newAccount = await _authService.CreateUser(account);
-            }
-            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
-            {
-                return Conflict();
-            }
-            return Ok(newAccount);
-        }
+        //[HttpPost("register")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status409Conflict)]
+        //public async Task<ActionResult<Account>> Register(AccountDtoWithPassword account)
+        //{
+        //    Account newAccount;
+        //    try
+        //    {
+        //        newAccount = await _authService.CreateUser(account);
+        //    }
+        //    catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+        //    {
+        //        return Conflict();
+        //    }
+        //    return Ok(newAccount);
+        //}
     }
 }

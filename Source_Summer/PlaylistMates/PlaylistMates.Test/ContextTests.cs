@@ -76,11 +76,11 @@ public class ContextTests : DatabaseTest
                 email: a.Internet.Email(),
                 accountName: a.Person.UserName,
                 salt: salt,
-                hashedPassword: CalculateHash("1234",salt)
+                hashedPassword: CalculateHash("1234", salt)
                 ))
             .Generate(25)
             .ToList();
-        
+
         _db.Accounts.AddRange(accounts);
         _db.SaveChanges();
 
@@ -154,14 +154,17 @@ public class ContextTests : DatabaseTest
             .ToList();
 
         var songs = new Faker<Song>()
-            .CustomInstantiator(s => new Song(
+            .CustomInstantiator(s => {
+            return new Song(
                 isrcCode: s.Lorem.Word(),  // The isrc code is a 12-digit string.
                 title: s.Lorem.Word(),
                 releaseDate: s.Date.Recent(1000),
-                durationInMillis: s.Random.Int(1000,100000),
-                artists: (List<Artist>) s.Random.ListItems(artists),
-                platforms: (List<Platform>) s.Random.ListItems(platforms)
-                ))
+                durationInMillis: s.Random.Int(1000, 100000),
+                artists: (List<Artist>)s.Random.ListItems(artists),
+                platforms: (List<Platform>)s.Random.ListItems(platforms))
+                { Guid = s.Random.Guid() };
+
+            })
             .Generate(15)
             .GroupBy(s => s.IsrcCode).Select(g => g.First())
             .ToList();
@@ -208,10 +211,13 @@ public class ContextTests : DatabaseTest
         _db.Database.EnsureCreated();
 
         var songCollections = new Faker<SongCollection>()
-    .CustomInstantiator(s => new SongCollection(
-        title: s.Lorem.Word(),
-        creationDate: s.Date.Recent(1000)
-        ))
+    .CustomInstantiator(s => {
+        return new SongCollection(
+            title: s.Lorem.Word(),
+            creationDate: s.Date.Recent(1000))
+        { Guid = s.Random.Guid() };
+
+    })
     .Generate(1)
     .ToList();
         _db.SongCollections.AddRange(songCollections);

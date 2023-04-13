@@ -56,16 +56,16 @@ namespace PlaylistMates.Webapi.Services
         /// </summary>
         /// <param name="credentials"></param>
         /// <returns></returns>
-        public async Task<Account> CreateUser(UserCredentials credentials)
-        {
-            string salt = GenerateRandom();
-            // Den neuen Userdatensatz erstellen
-            Account newUser = new Account(credentials.Email, accountName, salt, CalculateHash(credentials.Password, salt));
+        //public async Task<Account> CreateUser(UserCredentials credentials)
+        //{
+        //    string salt = GenerateRandom();
+        //    // Den neuen Userdatensatz erstellen
+        //    Account newUser = new Account(credentials.Email, accountName, salt, CalculateHash(credentials.Password, salt));
 
-            _context.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-            await _context.SaveChangesAsync();
-            return newUser;
-        }
+        //    _context.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+        //    await _context.SaveChangesAsync();
+        //    return newUser;
+        //}
         
 
         /// <summary>

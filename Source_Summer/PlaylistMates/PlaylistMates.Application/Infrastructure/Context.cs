@@ -45,6 +45,11 @@ namespace PlaylistMates.Application.Infrastructure
 
             modelBuilder.Entity<LogItem>().Property(l => l.TimeStamp).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+
+            // TODO LOOP THROUGH PROPS
+            modelBuilder.Entity<Song>().HasAlternateKey("Guid");
+            modelBuilder.Entity<SongCollection>().HasAlternateKey("Guid");
+
             modelBuilder
             .Entity<AccountPlaylist>()
             .Property(a => a.Role)

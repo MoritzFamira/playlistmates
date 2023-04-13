@@ -27,6 +27,7 @@ namespace PlaylistMates.Application.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; private set; }
+        public Guid Guid { get; set; }
         public string IsrcCode { get; set; }  // ISRC Code with ID (standardized with iso 3901)
         public string Titel { get; set; }  // name of the song
         public DateTime ReleaseDate { get; set; }  
