@@ -29,8 +29,6 @@ namespace PlaylistMates.Application.Dto
         [MinLength(1, ErrorMessage = "At least one artist is required.")]
         List<Artist> Artists,
 
-        [Required]
-        [MinLength(1, ErrorMessage = "At least one SongCollection Guid is required.")]
         List<Guid> SongCollectionGuids
     ) : IValidatableObject
     {
