@@ -106,27 +106,38 @@ public class ContextTests : DatabaseTest
         _db.SaveChanges();
 
         var songCollections = new Faker<SongCollection>()
-            .CustomInstantiator(s => new SongCollection(
-                title: s.Lorem.Word(),
-                creationDate: s.Date.Recent(1000)
-                ))
+            .CustomInstantiator(s =>
+            {
+                return new SongCollection(
+                    title: s.Lorem.Word(),
+                    creationDate: s.Date.Recent(1000))
+                { Guid = s.Random.Guid() };
+
+            })
             .Generate(30)
             .ToList();
         _db.SongCollections.AddRange(songCollections);
         _db.SaveChanges();
 
         var playlists = new Faker<Playlist>()
-            .CustomInstantiator(p => new Playlist(
-                description: p.Lorem.Sentence(),
-                isPublic: p.Random.Bool()
-                ))
-            .RuleFor(p => p.Title, f => f.Lorem.Word())
-            .RuleFor(p => p.CreationDate, f => f.Date.Recent(1000))
-            .Generate(20)
-            .ToList();
+            .CustomInstantiator(p =>
+            {
+                return new Playlist(
+                    description: p.Lorem.Sentence(),
+                    isPublic: p.Random.Bool())
+            {
+                Title = p.Lorem.Word(),
+                CreationDate = p.Date.Recent(1000),
+                Guid = p.Random.Guid()
+            };
+        })
+        .Generate(20)
+        .ToList();
 
         _db.Playlists.AddRange(playlists);
         _db.SaveChanges();
+
+
 
 
 
@@ -154,14 +165,15 @@ public class ContextTests : DatabaseTest
             .ToList();
 
         var songs = new Faker<Song>()
-            .CustomInstantiator(s => {
-            return new Song(
-                isrcCode: s.Lorem.Word(),  // The isrc code is a 12-digit string.
-                title: s.Lorem.Word(),
-                releaseDate: s.Date.Recent(1000),
-                durationInMillis: s.Random.Int(1000, 100000),
-                artists: (List<Artist>)s.Random.ListItems(artists),
-                platforms: (List<Platform>)s.Random.ListItems(platforms))
+            .CustomInstantiator(s =>
+            {
+                return new Song(
+                    isrcCode: s.Lorem.Word(),  // The isrc code is a 12-digit string.
+                    title: s.Lorem.Word(),
+                    releaseDate: s.Date.Recent(1000),
+                    durationInMillis: s.Random.Int(1000, 100000),
+                    artists: (List<Artist>)s.Random.ListItems(artists),
+                    platforms: (List<Platform>)s.Random.ListItems(platforms))
                 { Guid = s.Random.Guid() };
 
             })
@@ -173,14 +185,21 @@ public class ContextTests : DatabaseTest
         _db.SaveChanges();
 
         var albums = new Faker<Album>()
-            .CustomInstantiator(a => new Album(
-                artists: (List<Artist>)a.Random.ListItems(artists)))
-            .RuleFor(p => p.Title, f => f.Lorem.Word())
-            .RuleFor(p => p.CreationDate, f => f.Date.Recent(1000))
+            .CustomInstantiator(a => {
+                return new Album(
+                    artists: (List<Artist>)a.Random.ListItems(artists))
+                {
+                    Title = a.Lorem.Word(),
+                    CreationDate = a.Date.Recent(1000),
+                    Guid = a.Random.Guid()
+                };
+            })
             .Generate(15)
             .ToList();
+
         _db.Albums.AddRange(albums);
         _db.SaveChanges();
+
 
         var logItems = new Faker<LogItem>()
             .CustomInstantiator(l => new LogItem(
@@ -189,8 +208,8 @@ public class ContextTests : DatabaseTest
             .Generate(30)
             .ToList();
         _db.LogItems.AddRange(logItems);
-        
-        
+
+
         _db.SaveChanges();
 
         _db.ChangeTracker.Clear();
@@ -211,7 +230,8 @@ public class ContextTests : DatabaseTest
         _db.Database.EnsureCreated();
 
         var songCollections = new Faker<SongCollection>()
-    .CustomInstantiator(s => {
+    .CustomInstantiator(s =>
+    {
         return new SongCollection(
             title: s.Lorem.Word(),
             creationDate: s.Date.Recent(1000))
@@ -271,14 +291,19 @@ public class ContextTests : DatabaseTest
 
 
         var playlists = new Faker<Playlist>()
-            .CustomInstantiator(p => new Playlist(
-                description: p.Lorem.Sentence(),
-                isPublic: p.Random.Bool()
-                ))
-            .RuleFor(p => p.Title, f => f.Lorem.Word())
-            .RuleFor(p => p.CreationDate, f => f.Date.Recent(1000))
-            .Generate(3)
-            .ToList();
+                    .CustomInstantiator(p =>
+                    {
+                        return new Playlist(
+                            description: p.Lorem.Sentence(),
+                            isPublic: p.Random.Bool())
+                        {
+                            Title = p.Lorem.Word(),
+                            CreationDate = p.Date.Recent(1000),
+                            Guid = p.Random.Guid()
+                        };
+                    })
+                .Generate(20)
+                .ToList();
 
         _db.Playlists.AddRange(playlists);
         _db.SaveChanges();

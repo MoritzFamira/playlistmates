@@ -25,7 +25,7 @@ namespace PlaylistMates.Application.Model
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; private set; }
         public Guid Guid { get; set; }
         public string IsrcCode { get; set; }  // ISRC Code with ID (standardized with iso 3901)
