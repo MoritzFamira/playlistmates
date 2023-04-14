@@ -125,12 +125,12 @@ public class ContextTests : DatabaseTest
                 return new Playlist(
                     description: p.Lorem.Sentence(),
                     isPublic: p.Random.Bool())
-            {
-                Title = p.Lorem.Word(),
-                CreationDate = p.Date.Recent(1000),
-                Guid = p.Random.Guid()
-            };
-        })
+                {
+                    Title = p.Lorem.Word(),
+                    CreationDate = p.Date.Recent(1000),
+                    Guid = p.Random.Guid()
+                };
+            })
         .Generate(20)
         .ToList();
 
@@ -185,7 +185,8 @@ public class ContextTests : DatabaseTest
         _db.SaveChanges();
 
         var albums = new Faker<Album>()
-            .CustomInstantiator(a => {
+            .CustomInstantiator(a =>
+            {
                 return new Album(
                     artists: (List<Artist>)a.Random.ListItems(artists))
                 {
