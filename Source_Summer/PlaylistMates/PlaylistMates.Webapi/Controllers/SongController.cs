@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PlaylistMates.Webapi.Services;
 using PlaylistMates.Application.Infrastructure;
 using PlaylistMates.Application.Model;
@@ -15,9 +17,9 @@ namespace PlaylistMates.Webapi.Controllers
     {
         private readonly ILogger<SongController> _logger;
         private readonly Context _context;
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
 
-        public SongController(ILogger<SongController> logger, Context context, Mapper mapper)
+        public SongController(ILogger<SongController> logger, Context context, IMapper mapper)
         {
             _logger = logger;
             _context = context;
@@ -47,6 +49,12 @@ namespace PlaylistMates.Webapi.Controllers
                             })
                             .FirstOrDefault(s => s.Guid == guid);
             if (song is null) { return NotFound(); }
+
+            if (User.FindFirstValue(ClaimTypes.Name) != null)
+            {
+                _logger.LogInformation("{User} got song with GUID {Guid} at {DT}",User.FindFirstValue(ClaimTypes.Name),guid,DateTime.UtcNow.ToLongTimeString());
+            }
+            _logger.LogInformation("Non-user got song with GUID {Guid} at {DT}",guid,DateTime.UtcNow.ToLongTimeString());
             return Ok(song);
 
         }
@@ -59,6 +67,7 @@ namespace PlaylistMates.Webapi.Controllers
         public async Task<ActionResult<List<Song>>> GetSongs()
         {
             var song = _context.Songs
+                            .AsNoTracking()
                             .Select(s => new
                             {
                                 s.Guid,
@@ -69,6 +78,11 @@ namespace PlaylistMates.Webapi.Controllers
 
                             });
             if (song is null) { return NotFound(); }
+            if (User.FindFirstValue(ClaimTypes.Name) != null)
+            {
+                _logger.LogInformation("{User} got songs at {DT}",User.FindFirstValue(ClaimTypes.Name),DateTime.UtcNow.ToLongTimeString());
+            }
+            _logger.LogInformation("Non-user got songs at {DT}",DateTime.UtcNow.ToLongTimeString());
             return Ok(song);
         }
 
