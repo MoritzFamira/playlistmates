@@ -29,8 +29,6 @@ namespace PlaylistMates.Webapi.Controllers
         [HttpGet("guid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<SongDto>> GetSong(Guid guid)
         {
 
@@ -62,8 +60,6 @@ namespace PlaylistMates.Webapi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<List<Song>>> GetSongs()
         {
             var song = _context.Songs
@@ -87,6 +83,7 @@ namespace PlaylistMates.Webapi.Controllers
         }
 
         [HttpPut("{guid}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -101,11 +98,12 @@ namespace PlaylistMates.Webapi.Controllers
 
             _mapper.Map(songDto, song);
             await _context.SaveChangesAsync();
-
+            _logger.LogInformation("{User} put song with Guid {Guid} at {DT}",User.FindFirstValue(ClaimTypes.Name),guid,DateTime.UtcNow.ToLongTimeString());
             return NoContent();
         }
 
         [HttpDelete("{guid}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -120,9 +118,8 @@ namespace PlaylistMates.Webapi.Controllers
 
             _context.Songs.Remove(song);
             await _context.SaveChangesAsync();
-
+            _logger.LogInformation("{User} deleted song with Guid {Guid} at {DT}",User.FindFirstValue(ClaimTypes.Name),guid,DateTime.UtcNow.ToLongTimeString());
             return NoContent();
         }
-    }
     }
 }
