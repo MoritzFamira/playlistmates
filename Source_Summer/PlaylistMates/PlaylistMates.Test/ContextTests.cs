@@ -105,19 +105,54 @@ public class ContextTests : DatabaseTest
         _db.AccountPlatforms.AddRange(accountPlatforms);
         _db.SaveChanges();
 
-        var songCollections = new Faker<SongCollection>()
+        var artists = new Faker<Artist>()
+            .CustomInstantiator(a => new Artist(
+                Name: a.Person.UserName
+                ))
+            .Generate(20)
+            .ToList();
+
+        var songs = new Faker<Song>()
             .CustomInstantiator(s =>
             {
-                return new SongCollection(
+                return new Song(
+                    isrcCode: s.Lorem.Word(),  // The isrc code is a 12-digit string.
                     title: s.Lorem.Word(),
-                    creationDate: s.Date.Recent(1000))
+                    releaseDate: s.Date.Recent(1000),
+                    durationInMillis: s.Random.Int(1000, 100000),
+                    artists: (List<Artist>)s.Random.ListItems(artists),
+                    platforms: (List<Platform>)s.Random.ListItems(platforms))
                 { Guid = s.Random.Guid() };
 
             })
-            .Generate(30)
+            .Generate(15)
+            .GroupBy(s => s.IsrcCode).Select(g => g.First())
             .ToList();
+
+        _db.Songs.AddRange(songs);
+        _db.SaveChanges();
+
+        var songCollections = new Faker<SongCollection>()
+.CustomInstantiator(s =>
+{
+    var songCollection = new SongCollection(
+        title: s.Lorem.Word(),
+        creationDate: s.Date.Recent(1000))
+    { Guid = s.Random.Guid() };
+
+    var songsToAdd = s.Random.ListItems(songs);
+    foreach (var song in songsToAdd)
+    {
+        songCollection.AddSong(song);
+    }
+
+    return songCollection;
+})
+.Generate(30)
+.ToList();
         _db.SongCollections.AddRange(songCollections);
         _db.SaveChanges();
+
 
         var playlists = new Faker<Playlist>()
             .CustomInstantiator(p =>
@@ -157,32 +192,6 @@ public class ContextTests : DatabaseTest
         _db.AccountPlaylists.AddRange(accountPlaylist);
         _db.SaveChanges();
 
-        var artists = new Faker<Artist>()
-            .CustomInstantiator(a => new Artist(
-                Name: a.Person.UserName
-                ))
-            .Generate(20)
-            .ToList();
-
-        var songs = new Faker<Song>()
-            .CustomInstantiator(s =>
-            {
-                return new Song(
-                    isrcCode: s.Lorem.Word(),  // The isrc code is a 12-digit string.
-                    title: s.Lorem.Word(),
-                    releaseDate: s.Date.Recent(1000),
-                    durationInMillis: s.Random.Int(1000, 100000),
-                    artists: (List<Artist>)s.Random.ListItems(artists),
-                    platforms: (List<Platform>)s.Random.ListItems(platforms))
-                { Guid = s.Random.Guid() };
-
-            })
-            .Generate(15)
-            .GroupBy(s => s.IsrcCode).Select(g => g.First())
-            .ToList();
-
-        _db.Songs.AddRange(songs);
-        _db.SaveChanges();
 
         var albums = new Faker<Album>()
             .CustomInstantiator(a =>
