@@ -165,7 +165,7 @@ namespace PlaylistMates.Webapi.Controllers
             return NoContent();
         }
 
-        [HttpPost("/{playlistId}/songs/{songId}")]
+        [HttpPost("/api/Playlist/{playlistId}/songs/{songId}")]
         [Authorize(Policy ="PlaylistCollaboratorOrOwner")]
         public async Task<IActionResult> AddSongToPlaylist(int playlistId, int songId)
         {
@@ -183,7 +183,7 @@ namespace PlaylistMates.Webapi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("/{playlistId}/songs/{songId}")]
+        [HttpDelete("/api/Playlist/{playlistId}/songs/{songId}")]
         [Authorize(Policy = "PlaylistCollaboratorOrOwner")]
         public async Task<IActionResult> RemoveSongFromPlaylist(int playlistId, int songId)
         {
