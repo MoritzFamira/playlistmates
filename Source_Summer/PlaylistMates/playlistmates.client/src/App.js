@@ -3,10 +3,10 @@ import {
     BrowserRouter,
     Routes,
     Route,
-    Link,
 } from "react-router-dom";
 import Signin from "./Signin.js"
 import Signup from "./SignUp.js"
+import Test from "./Test.js";
 
 export default function App() {
     return (
@@ -15,6 +15,7 @@ export default function App() {
                 <Route path="/" element={<Signin />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/edittest" element={<EditTest />} />
+                <Route path="/testing" element={<Test/>}/>
             </Routes>
         </BrowserRouter>
     );
