@@ -14,6 +14,8 @@ namespace PlaylistMates.Application.Dto
         {
             CreateMap<SongDto, Song>();
             CreateMap<Song, SongDto>();
+            CreateMap<Playlist, PlaylistDto>();
+            CreateMap<PlaylistDto, Playlist>();
         }
     }
 

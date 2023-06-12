@@ -27,22 +27,21 @@ namespace PlaylistMates.Application.Dto
 
         [Required]
         [MinLength(1, ErrorMessage = "At least one artist is required.")]
-        List<Artist> Artists,
+        List<Artist> Artists
+        );
+    //) : IValidatableObject
+    //{
+    //    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    //    {
 
-        List<Guid> SongCollectionGuids
-    ) : IValidatableObject
-    {
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-
-            var db = validationContext.GetRequiredService<Context>();
-            foreach (var item in SongCollectionGuids)
-            {
-                if (!db.SongCollections.Any(s => s.Guid == item))
-                {
-                    yield return new ValidationResult("SongCollection does not exist", new[] { nameof(SongCollectionGuids) });
-                }
-            }
-        }
-    }
+    //        var db = validationContext.GetRequiredService<Context>();
+    //        foreach (var item in SongCollectionGuids)
+    //        {
+    //            if (!db.SongCollections.Any(s => s.Guid == item))
+    //            {
+    //                yield return new ValidationResult("SongCollection does not exist", new[] { nameof(SongCollectionGuids) });
+    //            }
+    //        }
+    //    }
+    //}
 }

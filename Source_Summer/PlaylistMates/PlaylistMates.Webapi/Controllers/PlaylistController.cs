@@ -60,33 +60,49 @@ namespace PlaylistMates.Webapi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<List<Playlist>>> GetPlaylistsByUser(String email)
+        public async Task<ActionResult<List<PlaylistDto>>> GetPlaylistsByUser(string email)
         {
-            _logger.LogDebug(email);
             var loggedInUserEmail = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-            
-            if(loggedInUserEmail == null)
+
+            if (loggedInUserEmail == null)
             {
                 return Forbid(); // if there's no email claim in the token
             }
 
             if (!string.Equals(loggedInUserEmail, email, StringComparison.OrdinalIgnoreCase))
             {
-                return Forbid(); // if the logged in user email does not match the requested user email
+                return Forbid(); // if the logged-in user email does not match the requested user email
             }
 
-            List<Playlist> playlists = _context.Accounts
-    .Include(a => a.AccountPlaylists)
-        .ThenInclude(ap => ap.Playlist)
-            .ThenInclude(p => p.Songs)
-    .Where(a => a.Email == email)
-    .SelectMany(a => a.AccountPlaylists
-        .Select(ap => ap.Playlist)).ToList();
+            var account = await _context.Accounts
+                .Include(a => a.AccountPlaylists)
+                    .ThenInclude(ap => ap.Playlist)
+                        .ThenInclude(p => p.Songs)
+                .SingleOrDefaultAsync(a => a.Email == email);
 
-            if (playlists.IsNullOrEmpty()) { return Forbid(); }
-            
+            if (account == null)
+            {
+                return NotFound(); // if the account is not found
+            }
+
+            var playlists = account.AccountPlaylists.Select(ap => new PlaylistDto
+            {
+                Description = ap.Playlist.Description,
+                IsPublic = ap.Playlist.IsPublic,
+                Role = ap.Role.ToString(),
+                Songs = ap.Playlist.Songs.Select(s => new SongDto(
+                    s.Guid,
+                    s.IsrcCode,
+                    s.Titel,
+                    s.ReleaseDate,
+                    s.DurationInMillis,
+                    s.Artists
+                )).ToList()
+            }).ToList();
+
             return playlists;
         }
+
 
         [HttpPut("{id}")]
         [Authorize(Policy = "PlaylistOwnerPolicy")]
