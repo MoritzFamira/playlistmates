@@ -204,6 +204,45 @@ namespace PlaylistMates.Webapi.Controllers
             return NoContent();
         }
 
+        [HttpGet("/api/Playlist/{playlistId}/role")]
+        [Authorize]
+        public ActionResult<string> GetUserRoleForPlaylist(int playlistId)
+        {
+            var loggedInUserEmail = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (string.IsNullOrEmpty(loggedInUserEmail))
+            {
+                return Unauthorized();
+            }
+
+            var playlist = _context.Playlists.Find(playlistId);
+
+            if (playlist == null)
+            {
+                return NotFound();
+            }
+
+            var account = _context.Accounts
+                .Include(a => a.AccountPlaylists)
+                .SingleOrDefault(a => a.Email == loggedInUserEmail);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            var accountPlaylist = account.AccountPlaylists
+                .SingleOrDefault(ap => ap.PlaylistId == playlistId);
+
+            if (accountPlaylist == null)
+            {
+                return NotFound();
+            }
+
+            var userRole = accountPlaylist.Role.ToString();
+            return Ok(userRole);
+        }
+
 
     }
 }
