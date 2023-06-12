@@ -16,7 +16,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-          {'Copyright © Playlistmates '}
+          {'Copyright ï¿½ Playlistmates '}
       
       {new Date().getFullYear()}
     </Typography>
