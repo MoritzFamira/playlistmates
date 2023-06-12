@@ -148,7 +148,7 @@ public class ContextTests : DatabaseTest
 
     return songCollection;
 })
-.Generate(30)
+.Generate(35)
 .ToList();
         _db.SongCollections.AddRange(songCollections);
         _db.SaveChanges();
