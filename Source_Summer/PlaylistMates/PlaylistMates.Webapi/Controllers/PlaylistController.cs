@@ -39,7 +39,9 @@ namespace PlaylistMates.Webapi.Controllers
         {
             // Navigationen in der Entity Klasse Pupil können über 
             // [System.Text.Json.Serialization.JsonIgnore] ausgeschlossen werden.
-            Playlist playlist = await _context.Playlists.FindAsync(playlistId);
+            Playlist playlist = await _context.Playlists
+        .Include(p => p.Songs)
+        .FirstOrDefaultAsync(p => p.Id == playlistId);
             // get the name of the user currently logged in
 
             // TODO: This currently basically outputs our whole schema because navigation properties have not been set to jsonignore
@@ -74,12 +76,13 @@ namespace PlaylistMates.Webapi.Controllers
             }
 
             List<Playlist> playlists = _context.Accounts
-                .Include(a => a.AccountPlaylists)
-                .ThenInclude(ap => ap.Playlist)
-                .Where(a => a.Email == email)
-                .SelectMany(a => a.AccountPlaylists
-                    .Select(ap => ap.Playlist)).ToList();
-            Console.WriteLine(playlists.ToString());
+    .Include(a => a.AccountPlaylists)
+        .ThenInclude(ap => ap.Playlist)
+            .ThenInclude(p => p.Songs)
+    .Where(a => a.Email == email)
+    .SelectMany(a => a.AccountPlaylists
+        .Select(ap => ap.Playlist)).ToList();
+
             if (playlists.IsNullOrEmpty()) { return Forbid(); }
             
             return playlists;
