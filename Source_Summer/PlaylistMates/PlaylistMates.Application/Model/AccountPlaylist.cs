@@ -23,6 +23,7 @@ namespace PlaylistMates.Application.Model
             AccountId = account.Id;
             Role = role;
         }
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected AccountPlaylist() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

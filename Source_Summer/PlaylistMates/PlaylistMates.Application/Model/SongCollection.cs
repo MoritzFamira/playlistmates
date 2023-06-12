@@ -34,5 +34,10 @@ namespace PlaylistMates.Application.Model
         {
             _songs.Add(song);
         }
+        public void RemoveSong(Song song)
+        {
+            _songs.Remove(song);
+        }
+
     }
 }
