@@ -29,7 +29,8 @@ const EditForm = ({playlistId}) => {
         event.preventDefault();
         if(validateForm()) {
             try {
-                const token = localstorage.getItem('jwtToken');
+               
+                const token = localStorage.getItem('jwtToken');
                 const response = await fetch(`http://localhost:5054/api/Playlist/${playlistId}`, {
                     method: 'PUT',
                     headers: {

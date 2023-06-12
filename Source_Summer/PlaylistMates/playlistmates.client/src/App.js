@@ -8,6 +8,7 @@ import {
 import Signin from "./Signin.js"
 import Signup from "./SignUp.js"
 import Autocomplete from "./components/songSelect.js"
+import EditTest from "./EditTest.js"
 
 export default function App() {
     return (
@@ -16,7 +17,6 @@ export default function App() {
                 <Route path="/" element={<Signin />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/edittest" element={<EditTest />} />
-                <Route path="/testing" element={<Test/>}/>
                 <Route path="/auto" element={<Autocomplete />} />
             </Routes>
         </BrowserRouter>

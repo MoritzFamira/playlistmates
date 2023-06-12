@@ -48,6 +48,7 @@ async function submitData(data) {
         .then((data) => (jwtToken = data))
         .catch((error) => console.log("error", error));
     console.log(jwtToken)
+    localStorage.setItem("jwtToken", jwtToken)
 }
 
 function SignIn() {
@@ -57,7 +58,7 @@ function SignIn() {
     const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log(data);
+        console.log(data);
     submitData(data);
   };
 
