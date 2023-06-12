@@ -27,14 +27,38 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
-  const handleSubmit = (event) => {
+async function submitData(data) {
+    var raw = JSON.stringify({
+        email: data.get('email'),
+        password: data.get('password')
+    })
+    console.log(raw)
+
+    var requestOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: raw,
+        redirect: "follow",
+    };
+    let jwtToken = null;
+    await fetch("http://localhost:5054/api/User/login", requestOptions)
+        .then((response) => response.text())
+        .then((data) => (jwtToken = data))
+        .catch((error) => console.log("error", error));
+    console.log(jwtToken)
+}
+
+function SignIn() {
+
+ 
+
+    const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    console.log(data);
+    submitData(data);
   };
 
   return (
@@ -76,10 +100,7 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+
             <Button
               type="submit"
               fullWidth
@@ -95,7 +116,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/SignUp.js" variant="body2">
+                <Link href="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
@@ -107,3 +128,5 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
+
+export default SignIn;

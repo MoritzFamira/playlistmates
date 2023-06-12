@@ -16,29 +16,46 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
+          {'Copyright © Playlistmates '}
       {new Date().getFullYear()}
-      {'.'}
     </Typography>
   );
 }
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
+
+async function submitData(data) {
+    var raw = JSON.stringify({
+        email: data.get('email'),
+        accountName: data.get('username'),
+        password: data.get('password')
+    })
+
+    var requestOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: raw,
+        redirect: "follow",
+
+
+    };
+    let jwtToken = null;
+    await fetch("http://localhost:5054/api/User/register", requestOptions)
+        .then((response) => response.text())
+        .then((data) => (jwtToken = data))
+        .catch((error) => console.log("error", error));
+    console.log(jwtToken)   
+}
+
 export default function SignUp() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log(data);
+        submitData(data);
+    }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -90,7 +107,17 @@ export default function SignUp() {
                   name="email"
                   autoComplete="email"
                 />
-              </Grid>
+                </Grid>
+               <Grid item xs={12}>
+                 <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
+                              />
+                          </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -119,7 +146,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
