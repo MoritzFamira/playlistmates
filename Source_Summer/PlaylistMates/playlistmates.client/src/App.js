@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Signin from "./Signin.js"
 import Signup from "./SignUp.js"
+import Autocomplete from "./components/songSelect.js"
 
 export default function App() {
     return (
@@ -14,6 +15,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Signin />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/auto" element={<Autocomplete />} />
             </Routes>
         </BrowserRouter>
     );
