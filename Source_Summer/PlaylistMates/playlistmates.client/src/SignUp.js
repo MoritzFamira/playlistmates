@@ -43,7 +43,7 @@ async function submitData(data) {
     };
     let jwtToken = null;
     await fetch("http://localhost:5054/api/User/register", requestOptions)
-        .then((response) => response.json())
+        .then((response) => response.text())
         .then((data) => (jwtToken = data))
         .catch((error) => console.log("error", error));
     console.log(jwtToken)   
