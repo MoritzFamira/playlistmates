@@ -3,10 +3,11 @@ import {
     BrowserRouter,
     Routes,
     Route,
+    Link,
 } from "react-router-dom";
 import Signin from "./Signin.js"
 import Signup from "./SignUp.js"
-import Test from "./Test.js";
+import Autocomplete from "./components/songSelect.js"
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/edittest" element={<EditTest />} />
                 <Route path="/testing" element={<Test/>}/>
+                <Route path="/auto" element={<Autocomplete />} />
             </Routes>
         </BrowserRouter>
     );
