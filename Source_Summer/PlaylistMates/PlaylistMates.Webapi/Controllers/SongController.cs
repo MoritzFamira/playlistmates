@@ -121,5 +121,27 @@ namespace PlaylistMates.Webapi.Controllers
             _logger.LogInformation("{User} deleted song with Guid {Guid} at {DT}",User.FindFirstValue(ClaimTypes.Name),guid,DateTime.UtcNow.ToLongTimeString());
             return NoContent();
         }
+        
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<SongDto>> CreateSong(SongDto songDto)
+        {
+            if (songDto == null)
+            {
+                return BadRequest();
+            }
+
+            var song = _mapper.Map<Song>(songDto);
+
+            await _context.Songs.AddAsync(song);
+            await _context.SaveChangesAsync();
+
+            var createdSongDto = _mapper.Map<SongDto>(song);
+
+            return CreatedAtAction(nameof(GetSong), new { guid = createdSongDto.Guid }, createdSongDto);
+        }
     }
 }
