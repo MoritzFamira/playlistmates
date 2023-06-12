@@ -132,60 +132,61 @@ public class ContextTests : DatabaseTest
         _db.Songs.AddRange(songs);
         _db.SaveChanges();
 
-        var songCollections = new Faker<SongCollection>()
-.CustomInstantiator(s =>
-{
-    var songCollection = new SongCollection(
-        title: s.Lorem.Word(),
-        creationDate: s.Date.Recent(1000))
-    { Guid = s.Random.Guid() };
+//        var songCollections = new Faker<SongCollection>()
+//.CustomInstantiator(s =>
+//{
+//    var songCollection = new SongCollection(
+//        title: s.Lorem.Word(),
+//        creationDate: s.Date.Recent(1000))
+//    { Guid = s.Random.Guid() };
 
-    var songsToAdd = s.Random.ListItems(songs);
-    foreach (var song in songsToAdd)
-    {
-        songCollection.AddSong(song);
-    }
+//    var songsToAdd = s.Random.ListItems(songs);
+//    foreach (var song in songsToAdd)
+//    {
+//        songCollection.AddSong(song);
+//    }
 
-    return songCollection;
-})
-.Generate(35)
-.ToList();
-        _db.SongCollections.AddRange(songCollections);
-        _db.SaveChanges();
+//    return songCollection;
+//})
+//.Generate(35)
+//.ToList();
+//        _db.SongCollections.AddRange(songCollections);
+//        _db.SaveChanges();
 
 
         var playlists = new Faker<Playlist>()
             .CustomInstantiator(p =>
             {
-                return new Playlist(
+                var playlist = new Playlist(
                     description: p.Lorem.Sentence(),
                     isPublic: p.Random.Bool())
                 {
                     Title = p.Lorem.Word(),
                     CreationDate = p.Date.Recent(1000),
                     Guid = p.Random.Guid()
+
                 };
+                var songsToAdd = p.Random.ListItems(songs);
+                foreach (var song in songsToAdd)
+                {
+                    playlist.AddSong(song);
+                }
+                return playlist;
             })
-        .Generate(20)
+        .Generate(30)
         .ToList();
 
         _db.Playlists.AddRange(playlists);
         _db.SaveChanges();
 
 
-
-
-
-
-        // error here
-        // the data is correctly saved but when retreiving the data an exception is thrown
         var accountPlaylist = new Faker<AccountPlaylist>()
             .CustomInstantiator(a => new AccountPlaylist(
                account: a.PickRandom(accounts),
                playlist: a.PickRandom(playlists),
                role: a.PickRandom<PlaylistRole>()
            ))
-            .Generate(15)
+            .Generate(25)
             .GroupBy(a => new { a.AccountId, a.PlaylistId }).Select(g => g.First())
             .ToList();
 
@@ -196,15 +197,21 @@ public class ContextTests : DatabaseTest
         var albums = new Faker<Album>()
             .CustomInstantiator(a =>
             {
-                return new Album(
+                var album = new Album(
                     artists: (List<Artist>)a.Random.ListItems(artists))
                 {
                     Title = a.Lorem.Word(),
                     CreationDate = a.Date.Recent(1000),
                     Guid = a.Random.Guid()
                 };
+                var songsToAdd = a.Random.ListItems(songs);
+                foreach (var song in songsToAdd)
+                {
+                    album.AddSong(song);
+                }
+                return album;
             })
-            .Generate(15)
+            .Generate(20)
             .ToList();
 
         _db.Albums.AddRange(albums);
