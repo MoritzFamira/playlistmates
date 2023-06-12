@@ -65,17 +65,17 @@ namespace PlaylistMates.Webapi.Controllers
 
         /// <summary>
         /// POST Route für /api/user/logout
-        /// Entfernt das Cookie für die Authentifizierung.
+        /// Used for cookie based authentification, we are discarding the token client side
         /// </summary>
-        /// <returns>Redirect zur Hauptseite.</returns>
-        [HttpGet("logout")]
-        [ProducesResponseType(StatusCodes.Status302Found)]
-        public async Task<IActionResult> LogoutAsync()
-        {
-            await HttpContext
-                .SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Redirect("/");
-        }
+        ///
+        //[HttpGet("logout")]
+        //[ProducesResponseType(StatusCodes.Status302Found)]
+        //public async Task<IActionResult> LogoutAsync()
+        //{
+        //    await HttpContext
+        //        .SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        //    return Redirect("/");
+        //}
 
         /// <summary>
         /// Erstellt einen Benutzer in der Datenbank und gibt den erstellten Benutzer zurück.
