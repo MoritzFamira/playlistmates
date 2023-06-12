@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using PlaylistMates.Webapi.Services;
 using PlaylistMates.Application.Infrastructure;
 using PlaylistMates.Application.Model;
+using PlaylistMates.Application.Dto;
+using AutoMapper;
 
 namespace PlaylistMates.Webapi.Controllers
 {
@@ -16,12 +18,15 @@ namespace PlaylistMates.Webapi.Controllers
     {
         private readonly ILogger<PlaylistController> _logger;
         private readonly Context _context;
+        private readonly IMapper _mapper;
 
 
-        public PlaylistController(ILogger<PlaylistController> logger, Context context)
+
+        public PlaylistController(ILogger<PlaylistController> logger, Context context, IMapper mapper)
         {
             _logger = logger;
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet("{playlistId}")]
@@ -79,6 +84,123 @@ namespace PlaylistMates.Webapi.Controllers
             
             return playlists;
         }
-        
+
+        [HttpPut("{id}")]
+        [Authorize(Policy = "PlaylistOwnerPolicy")]
+        public IActionResult UpdatePlaylist(int id, [FromBody] PlaylistUpdateDto playlistDto)
+        {
+            
+                var existingPlaylist = _context.Playlists.Find(id);
+
+                if (existingPlaylist == null)
+                {
+                    return NotFound();
+                }
+
+                existingPlaylist.Description = playlistDto.Description;
+                existingPlaylist.IsPublic = playlistDto.IsPublic;
+
+                _context.SaveChanges();
+            
+
+            return NoContent();
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<Playlist>> CreatePlaylist([FromBody] PlaylistCreateDto playlistDto)
+        {
+            if (playlistDto == null)
+            {
+                return BadRequest();
+            }
+
+            // Getting the email from the authenticated user
+            var email = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            // Finding the account associated with the email
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
+
+            if (account == null)
+            {
+                // The account is not found, handle this case
+                return NotFound("Account not found");
+            }
+
+            var playlist = _mapper.Map<Playlist>(playlistDto);
+
+            await _context.Playlists.AddAsync(playlist);
+            await _context.SaveChangesAsync();
+
+            // Creating a new AccountPlaylist record
+            var accountPlaylist = new AccountPlaylist(playlist, account, PlaylistRole.OWNER);
+
+            await _context.AccountPlaylists.AddAsync(accountPlaylist);
+            await _context.SaveChangesAsync();
+
+            var createdPlaylistDto = _mapper.Map<SongDto>(playlist);
+
+            return CreatedAtAction(nameof(GetPlaylist), new { id = playlist.Id }, createdPlaylistDto);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy ="PlaylistOwnerPolicy")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeletePlaylist(int id)
+        {
+            
+                var playlist = _context.Playlists.Find(id);
+
+                if (playlist == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Playlists.Remove(playlist);
+                _context.SaveChanges();
+            
+
+            return NoContent();
+        }
+
+        [HttpPost("/api/Playlist/{playlistId}/songs/{songId}")]
+        [Authorize(Policy ="PlaylistCollaboratorOrOwner")]
+        public async Task<IActionResult> AddSongToPlaylist(int playlistId, int songId)
+        {
+            var playlist = await _context.Playlists.FindAsync(playlistId);
+            var song = await _context.Songs.FindAsync(songId);
+
+            if (playlist == null || song == null)
+            {
+                return NotFound();
+            }
+
+            playlist.AddSong(song);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("/api/Playlist/{playlistId}/songs/{songId}")]
+        [Authorize(Policy = "PlaylistCollaboratorOrOwner")]
+        public async Task<IActionResult> RemoveSongFromPlaylist(int playlistId, int songId)
+        {
+            var playlist = await _context.Playlists.FindAsync(playlistId);
+            var song = await _context.Songs.FindAsync(songId);
+
+            if (playlist == null || song == null)
+            {
+                return NotFound();
+            }
+
+            playlist.RemoveSong(song);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
     }
 }
