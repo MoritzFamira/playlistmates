@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using PlaylistMates.Application.Dto;
 using PlaylistMates.Application.Infrastructure;
 using PlaylistMates.Application.Model;
 
@@ -56,16 +57,16 @@ namespace PlaylistMates.Webapi.Services
         /// </summary>
         /// <param name="credentials"></param>
         /// <returns></returns>
-        //public async Task<Account> CreateUser(UserCredentials credentials)
-        //{
-        //    string salt = GenerateRandom();
-        //    // Den neuen Userdatensatz erstellen
-        //    Account newUser = new Account(credentials.Email, accountName, salt, CalculateHash(credentials.Password, salt));
+        public async Task<Account> CreateUser(AccountDtoWithPassword account)
+        {
+            string salt = GenerateRandom();
+            // Den neuen Userdatensatz erstellen
+            Account newUser = new Account(account.Email, account.AccountName, salt, CalculateHash(account.Password, salt));
 
-        //    _context.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-        //    await _context.SaveChangesAsync();
-        //    return newUser;
-        //}
+            _context.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            await _context.SaveChangesAsync();
+            return newUser;
+        }
         
 
         /// <summary>

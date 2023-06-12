@@ -8,8 +8,7 @@ namespace PlaylistMates.Application.Dto
 {
     public class AccountDtoWithPassword
     {
-        public int Id { get; set; }
-        public string Email { get; private set; }
+        public string Email { get; set; }
         public string AccountName { get; set; }
         public string Password { get; set; }
     }
