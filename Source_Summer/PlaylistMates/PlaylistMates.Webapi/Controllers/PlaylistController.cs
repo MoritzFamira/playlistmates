@@ -87,6 +87,7 @@ namespace PlaylistMates.Webapi.Controllers
 
             var playlists = account.AccountPlaylists.Select(ap => new PlaylistDto
             {
+                Id = ap.Playlist.Id,
                 Description = ap.Playlist.Description,
                 IsPublic = ap.Playlist.IsPublic,
                 Role = ap.Role.ToString(),

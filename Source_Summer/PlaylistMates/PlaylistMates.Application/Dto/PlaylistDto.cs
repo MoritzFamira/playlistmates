@@ -18,7 +18,7 @@ namespace PlaylistMates.Application.Dto
     }
     public class PlaylistDto
     {
-        public Guid Guid { get; set; }
+        public int Id { get; set; }
         public string Description { get; set; }
         public bool IsPublic { get; set; }
         public string Role { get; set; }
