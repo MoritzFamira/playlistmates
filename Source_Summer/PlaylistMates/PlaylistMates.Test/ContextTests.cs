@@ -36,7 +36,7 @@ public class ContextTests : DatabaseTest
     }
 
     /// <summary>
-    /// Berechnet den HMACSHA256 Wert des Passwortes mit dem übergebenen Salt.
+    /// Berechnet den HMACSHA256 Wert des Passwortes mit dem Ã¼bergebenen Salt.
     /// </summary>
     /// <param name="password">Base64 Codiertes Passwort.</param>
     /// <param name="salt">Base64 Codiertes Salt.</param>
@@ -55,7 +55,7 @@ public class ContextTests : DatabaseTest
 
         byte[] hashedData = myHash.ComputeHash(passwordBytes);
 
-        // Das Bytearray wird als Hexstring zurückgegeben.
+        // Das Bytearray wird als Hexstring zurÃ¼ckgegeben.
         string hashedPassword = Convert.ToBase64String(hashedData);
         return hashedPassword;
     }

@@ -49,6 +49,7 @@ async function submitData(data) {
         .catch((error) => console.log("error", error));
     console.log(jwtToken)
     localStorage.setItem("jwtToken", jwtToken)
+    localStorage.setItem("email", data.get('email'))
 }
 
 function SignIn() {

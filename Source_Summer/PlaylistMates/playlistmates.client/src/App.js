@@ -9,6 +9,7 @@ import Signin from "./Signin.js"
 import Signup from "./SignUp.js"
 import Autocomplete from "./components/songSelect.js"
 import EditTest from "./EditTest.js"
+import Playlist from "./Playlists.js"
 
 export default function App() {
     return (
@@ -18,6 +19,7 @@ export default function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/edittest" element={<EditTest />} />
                 <Route path="/auto" element={<Autocomplete />} />
+                <Route path="/testing" element={<Playlist />} />
             </Routes>
         </BrowserRouter>
     );
