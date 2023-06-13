@@ -51,7 +51,8 @@ async function submitData(data) {
         .catch((error) => console.log("error", error));
     console.log(jwtToken)
     localStorage.setItem("jwtToken", jwtToken)
-    navigate("/playlists")
+    localStorage.setItem("email", data.get('email'))
+    navigate("/playlists");
 }
 
 function SignIn() {
