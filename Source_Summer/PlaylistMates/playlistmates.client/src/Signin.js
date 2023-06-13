@@ -1,92 +1,121 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-          {'Copyright � Playlistmates '}
-      
-      {new Date().getFullYear()}
-    </Typography>
-  );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
-
-async function submitData(data) {
-
-    var raw = JSON.stringify({
-        email: data.get('email'),
-        password: data.get('password')
-    })
-    console.log(raw)
-
-    var requestOptions = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: raw,
-        redirect: "follow",
-    };
-    let jwtToken = null;
-    await fetch("http://localhost:5054/api/User/login", requestOptions)
-        .then((response) => response.text())
-        .then((data) => (jwtToken = data))
-        .catch((error) => console.log("error", error));
-    console.log(jwtToken)
-    localStorage.setItem("jwtToken", jwtToken)
-    localStorage.setItem("email", data.get('email'))
-}
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import Alert from "@mui/material/Alert";
 
 function SignIn() {
-    const navigate = useNavigate();
+  const [emailError, setEmailError] = React.useState(false);
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [error, setError] = React.useState(null);
 
- 
+  const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-        submitData(data);
-        navigate("/playlists");
+    const form = event.currentTarget;
+    const email = form.email.value;
+    const password = form.password.value;
 
+    // Check if email and password are empty
+    if (!email || !password) {
+      setEmailError(!email);
+      setPasswordError(!password);
+      return;
+    }
+
+    // Reset the error states
+    setEmailError(false);
+    setPasswordError(false);
+
+    const data = new FormData();
+    data.append("email", email);
+    data.append("password", password);
+
+    try {
+      await submitData(data);
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
+  async function submitData(requestData) {
+    const raw = JSON.stringify({
+      email: requestData.get("email"),
+      password: requestData.get("password"),
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: raw,
+      redirect: "follow",
+    };
+
+    const response = await fetch(
+      "http://localhost:5054/api/User/login",
+      requestOptions
+    );
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Email or password is incorrect");
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+    }
+
+    const responseData = await response.text();
+    console.log(responseData);
+    localStorage.setItem("jwtToken", responseData);
+    localStorage.setItem("email", requestData.get("email"));
+    navigate("/playlists");
+  }
+
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={createTheme()}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          {error && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -96,6 +125,8 @@ function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              error={emailError}
+              onChange={() => setEmailError(false)}
             />
             <TextField
               margin="normal"
@@ -106,6 +137,8 @@ function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              error={passwordError}
+              onChange={() => setPasswordError(false)}
             />
 
             <Button
@@ -130,7 +163,6 @@ function SignIn() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
