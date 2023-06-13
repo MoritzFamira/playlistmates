@@ -8,6 +8,8 @@ import {
 import Signin from "./Signin.js"
 import Signup from "./SignUp.js"
 import Autocomplete from "./components/songSelect.js"
+import EditTest from "./EditTest.js"
+import Test from "./Test.js"
 
 export default function App() {
     return (

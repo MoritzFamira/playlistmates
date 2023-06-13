@@ -104,12 +104,12 @@ namespace PlaylistMates.Webapi.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        [Authorize(Policy = "PlaylistOwnerPolicy")]
-        public IActionResult UpdatePlaylist(int id, [FromBody] PlaylistUpdateDto playlistDto)
+        [HttpPut("{playlistId}")]
+        [Authorize(Policy = "PlaylistCollaboratorOrOwner")]
+        public IActionResult UpdatePlaylist(int playlistId, [FromBody] PlaylistUpdateDto playlistDto)
         {
             
-                var existingPlaylist = _context.Playlists.Find(id);
+                var existingPlaylist = _context.Playlists.Find(playlistId);
 
                 if (existingPlaylist == null)
                 {
@@ -163,14 +163,14 @@ namespace PlaylistMates.Webapi.Controllers
             return CreatedAtAction(nameof(GetPlaylist), new { id = playlist.Id }, createdPlaylistDto);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{playlistId}")]
         [Authorize(Policy ="PlaylistOwnerPolicy")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeletePlaylist(int id)
+        public IActionResult DeletePlaylist(int playlistId)
         {
             
-                var playlist = _context.Playlists.Find(id);
+                var playlist = _context.Playlists.Find(playlistId);
 
                 if (playlist == null)
                 {

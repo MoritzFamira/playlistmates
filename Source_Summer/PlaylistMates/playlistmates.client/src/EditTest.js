@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import EditForm from './components/EditForm';
 import { Button } from '@mui/material';
 
-const App = () => {
+const EditTest = () => {
     const [showForm, setShowForm] = useState(false);
 
     const handleClick = () => {
@@ -20,4 +20,4 @@ const App = () => {
     );
 }
 
-export default App;
+export default EditTest;
