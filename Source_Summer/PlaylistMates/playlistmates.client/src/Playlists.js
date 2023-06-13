@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Playlists = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -19,7 +19,7 @@ const Playlists = () => {
             "Content-Type": "application/json",
           },
         }
-      );
+      ).catch((error) => console.log("error", error)); //<Alert severity="error">This is an error alert — check it out!</Alert>
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -31,17 +31,17 @@ const Playlists = () => {
 
     fetchPlaylists();
   }, []);
-
+  
   return (
     <List component="nav">
-            {playlists.map((playlist, index) => (
-                <ListItem key={index}>
-                    <ListItemButton onClick={() => navigate(`/playlists/${playlist.guid}`)} >
-                        <ListItemText primary={playlist.description} />
-                    </ListItemButton>
-                </ListItem>
-            ))}
-        </List>
+      {playlists.map((playlist, index) => (
+        <ListItem key={index}>
+          <ListItemButton onClick={() => navigate(`/playlist/${playlist.id}`)}>
+            <ListItemText primary={playlist.description} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
   );
 };
 

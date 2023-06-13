@@ -3,15 +3,17 @@ import {
     BrowserRouter,
     Routes,
     Route,
-    Link,
+    useParams
 } from "react-router-dom";
 import Signin from "./Signin.js"
 import Signup from "./SignUp.js"
 import Autocomplete from "./components/songSelect.js"
 import EditTest from "./EditTest.js"
-import Playlist from "./Playlists.js"
+import Playlists from "./Playlists.js"
+import PlaylistList from "./components/PlaylistList.js"
 
 export default function App() {
+    
     return (
         <BrowserRouter>
             <Routes>
@@ -19,7 +21,8 @@ export default function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/edittest" element={<EditTest />} />
                 <Route path="/auto" element={<Autocomplete />} />
-                <Route path="/testing" element={<Playlist />} />
+                <Route path="/playlists" element={<Playlists />} />
+                <Route path="/playlist/:playlistId" element={<PlaylistList />} />
             </Routes>
         </BrowserRouter>
     );
