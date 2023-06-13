@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { useHistory } from 'react-router-dom';
+
 
 const EditForm = ({playlistId}) => {
     const [open, setOpen] = useState(false);
@@ -25,8 +27,11 @@ const EditForm = ({playlistId}) => {
         return formIsValid;
     }
 
+    const history = useHistory();
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         if(validateForm()) {
             try {
                
@@ -45,7 +50,8 @@ const EditForm = ({playlistId}) => {
                 }
     
                 const data = await response.json();
-                console.log(data);
+                history.push('/dashboard');
+
             } catch (error) {
                 console.error('There was a problem with the fetch operation: ', error);
             }
