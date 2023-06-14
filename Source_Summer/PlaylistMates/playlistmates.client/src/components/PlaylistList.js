@@ -15,12 +15,12 @@ const PlaylistList = () => {
       "Bearer " + localStorage.getItem("jwtToken")
     );
 
-<<<<<<< HEAD
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
-=======
+    };
+
       await fetch(
         `${process.env.REACT_APP_API_URL}/api/Playlist/` + playlistId,
         requestOptions
@@ -28,19 +28,7 @@ const PlaylistList = () => {
         .then((response) => response.json())
         .then((result) => setPlaylist(result))
         .catch((error) => console.log("error", error));
->>>>>>> 7ceb1eaeaa69988c330451c08043ee4d11f796ae
     };
-
-    await fetch(
-      "http://localhost:5054/api/Playlist/" + playlistId,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => setPlaylist(result))
-      .catch((error) => console.log("error", error));
-  };
-  
-  useEffect(() => {
 
     fetchPlaylist();
   }, [playlistId]); // fetchPlaylist will only run when playlistId changes
