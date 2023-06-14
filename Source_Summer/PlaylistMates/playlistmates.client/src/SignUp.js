@@ -32,7 +32,7 @@ import Alert from '@mui/material/Alert';
     };
 
     const response = await fetch(
-      "http://localhost:5054/api/User/register",
+      `${process.env.REACT_APP_API_URL}/api/User/register`,
       requestOptions
     );
     const data = await response.text();

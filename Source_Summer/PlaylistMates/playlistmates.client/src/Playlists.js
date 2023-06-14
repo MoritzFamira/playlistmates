@@ -12,7 +12,7 @@ const Playlists = () => {
       const token = localStorage.getItem("jwtToken"); // Assuming JWT token is stored in localStorage
       console.debug(email, token);
       const response = await fetch(
-        `http://localhost:5054/api/Playlist/byUser/${email}`,
+        `${process.env.REACT_APP_API_URL}/api/Playlist/byUser/${email}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

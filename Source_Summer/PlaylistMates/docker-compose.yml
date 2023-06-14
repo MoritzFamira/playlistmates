@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  playlistmatesapi:
+    container_name: playlistmatesapi
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 5000:5000
+    depends_on:
+    - oracledb
+    environment:
+      - DATABASE_HOST=oracledb
+
+  playlistmatesclient:
+    container_name: playlistmatesclient
+    build:
+      context: ./PlaylistMates.Client
+      dockerfile: Dockerfile
+    ports:
+    - 80:80
+    depends_on:
+    - playlistmatesapi
+
+  oracledb:
+    build:
+      context: ./docker/oracle
+      dockerfile: Dockerfile
+    ports:
+    - 1521:1521
+    environment:
+    - ORACLE_PASSWORD="password"
+    volumes:
+    - data:/opt/oracle/oradata
+    

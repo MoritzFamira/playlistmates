@@ -34,7 +34,7 @@ const EditForm = ({playlistId}) => {
             try {
                
                 const token = localStorage.getItem('jwtToken');
-                const response = await fetch(`http://localhost:5054/api/Playlist/${playlistId}`, {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/Playlist/${playlistId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
