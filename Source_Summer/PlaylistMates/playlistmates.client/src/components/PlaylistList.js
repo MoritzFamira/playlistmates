@@ -15,10 +15,20 @@ const PlaylistList = () => {
       "Bearer " + localStorage.getItem("jwtToken")
     );
 
+<<<<<<< HEAD
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
+=======
+      await fetch(
+        `${process.env.REACT_APP_API_URL}/api/Playlist/` + playlistId,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => setPlaylist(result))
+        .catch((error) => console.log("error", error));
+>>>>>>> 7ceb1eaeaa69988c330451c08043ee4d11f796ae
     };
 
     await fetch(
@@ -52,7 +62,7 @@ const PlaylistList = () => {
   };
   
   const fetchRole = async () => {
-    await fetch("http://localhost:5054/api/Playlist/4/role", requestOptions)
+    await fetch(`${process.env.REACT_APP_API_URL}/api/Playlist/4/role`, requestOptions)
       .then((response) => response.text())
       .then((result) => (setRole(result)))
       .catch((error) => console.log("error", error));

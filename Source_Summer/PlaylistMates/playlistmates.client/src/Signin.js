@@ -67,7 +67,7 @@ function SignIn() {
     };
 
     const response = await fetch(
-      "http://localhost:5054/api/User/login",
+      `${process.env.REACT_APP_API_URL}/api/User/login`,
       requestOptions
     );
 
