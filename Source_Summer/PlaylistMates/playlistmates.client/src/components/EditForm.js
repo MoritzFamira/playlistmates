@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 
+
 const EditForm = ({playlistId}) => {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState("");
@@ -25,8 +26,10 @@ const EditForm = ({playlistId}) => {
         return formIsValid;
     }
 
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         if(validateForm()) {
             try {
                
@@ -46,6 +49,7 @@ const EditForm = ({playlistId}) => {
     
                 const data = await response.json();
                 console.log(data);
+
             } catch (error) {
                 console.error('There was a problem with the fetch operation: ', error);
             }
