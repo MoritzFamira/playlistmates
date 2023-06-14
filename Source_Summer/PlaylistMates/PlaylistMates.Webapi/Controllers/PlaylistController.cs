@@ -77,7 +77,7 @@ namespace PlaylistMates.Webapi.Controllers
             var account = await _context.Accounts
                 .Include(a => a.AccountPlaylists)
                     .ThenInclude(ap => ap.Playlist)
-                        .ThenInclude(p => p.Songs)
+                .ThenInclude(p => p.Songs)
                 .SingleOrDefaultAsync(a => a.Email == email);
 
             if (account == null)
@@ -87,6 +87,7 @@ namespace PlaylistMates.Webapi.Controllers
 
             var playlists = account.AccountPlaylists.Select(ap => new PlaylistDto
             {
+                Title = ap.Playlist.Title,
                 Id = ap.Playlist.Id,
                 Description = ap.Playlist.Description,
                 IsPublic = ap.Playlist.IsPublic,
@@ -117,6 +118,7 @@ namespace PlaylistMates.Webapi.Controllers
                     return NotFound();
                 }
 
+                existingPlaylist.Title = playlistDto.Title;
                 existingPlaylist.Description = playlistDto.Description;
                 existingPlaylist.IsPublic = playlistDto.IsPublic;
 

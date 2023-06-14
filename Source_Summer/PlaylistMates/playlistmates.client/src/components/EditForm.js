@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 
 
-const EditForm = ({playlistId}) => {
+const EditForm = ({playlistId,setIsSubmitted}) => {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -29,7 +29,7 @@ const EditForm = ({playlistId}) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        //console.log(playlistId)
         if(validateForm()) {
             try {
                
@@ -47,18 +47,20 @@ const EditForm = ({playlistId}) => {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
     
-                const data = await response.json();
+                const data = await response.text();
                 console.log(data);
 
             } catch (error) {
                 console.error('There was a problem with the fetch operation: ', error);
             }
         }
+        setIsSubmitted(true);
+        setOpen(false);
     }
     return (
         <div>
             <Button variant="outlined" color="primary" onClick={() => setOpen(true)}>
-                Open Form
+                Edit Playlist
             </Button>
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogTitle>Edit Form</DialogTitle>

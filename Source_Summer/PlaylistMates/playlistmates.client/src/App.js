@@ -10,7 +10,7 @@ import Signup from "./SignUp.js"
 import Autocomplete from "./components/songSelect.js"
 import EditTest from "./EditTest.js"
 import Playlists from "./Playlists.js"
-import PlaylistList from "./components/PlaylistList.js"
+import PlaylistList from "./PlaylistList.js"
 
 export default function App() {
     

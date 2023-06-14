@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import ConfirmationDialogue from './components/ConfirmationDialogue';
+import SongSelect from './components/songSelect.js';
+import BackButton from "./components/BackButton.js"
+
 
 const PlaylistList = () => {
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [role, setRole] = useState("");
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [songIdToDelete, setSongIdToDelete] = useState(null);
+
 
   const fetchPlaylist = async () => {
     var myHeaders = new Headers();
@@ -31,10 +38,8 @@ const PlaylistList = () => {
       console.log("error", error);
     }
   };
-  
-  useEffect(() => {
-    
 
+  useEffect(() => {
     fetchPlaylist();
   }, [playlistId]);
 
@@ -68,7 +73,7 @@ const PlaylistList = () => {
     fetchRole();
   }, []);
 
-  const removeSong = async (songId) => {
+  const deleteSong = async (songId) => {
     var myHeaders = new Headers();
     myHeaders.append(
       "Authorization",
@@ -92,31 +97,57 @@ const PlaylistList = () => {
         );
       }
 
-      // fetch playlist again after song removal regardless of response status
       fetchPlaylist();
     } catch (error) {
       console.log("error", error);
     }
   };
 
+  const removeSong = (songId) => {
+    setIsConfirmationOpen(true);
+    setSongIdToDelete(songId);
+  };
 
   if (!playlist) {
-    return <div>Loading...</div>; // render loading state
+    return <div>Loading...</div>;
   }
 
   return (
-    <List>
-      {playlist.songs.map((song) => (
-        <ListItem key={song.id}>
-          <ListItemText>{song.titel}</ListItemText>
-          {(role === "LISTENER" || role === "OWNER") && (
-            <ListItemButton onClick={() => removeSong(song.id)}>
-              Delete
-            </ListItemButton>
-          )}
-        </ListItem>
-      ))}
-    </List>
+    <>
+
+      <div style={
+        {
+          position: "fixed",
+          top: "10px",
+          left: "10px",
+          zIndex: "1000",
+          color: "red"
+        }
+      }>
+        <BackButton />
+      </div>
+      <h1>{playlist.title}</h1>
+      <h4>{playlist.description}</h4>
+      <List>
+        {playlist.songs.map((song) => (
+          <ListItem key={song.id}>
+            <ListItemText>{song.titel}</ListItemText>
+            {(role === "LISTENER" || role === "OWNER") && (
+              <ListItemButton onClick={() => removeSong(song.id)}>
+                Delete
+              </ListItemButton>
+            )}
+          </ListItem>
+        ))}
+        <ConfirmationDialogue
+          open={isConfirmationOpen}
+          setOpen={setIsConfirmationOpen}
+          deleteSong={deleteSong}
+          songIdToDelete={songIdToDelete}
+        />
+      </List>
+      <SongSelect></SongSelect>
+    </>
   );
 };
 
