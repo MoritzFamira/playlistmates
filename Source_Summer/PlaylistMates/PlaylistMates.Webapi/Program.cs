@@ -5,16 +5,28 @@ using PlaylistMates.Application.Infrastructure;
 using PlaylistMates.Application.Model;
 using PlaylistMates.Webapi.Extensions;
 using PlaylistMates.Webapi.Services;
+using PlaylistMates.Application.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var opt = new DbContextOptionsBuilder()
+                .UseOracle(builder.Configuration["AppSettings:Database"].Replace("${DATABASE_HOST}", builder.Configuration["DATABASE_HOST"] ?? "localhost"))
+                .Options;
 
 builder.Services.AddDbContext<Context>(options =>
-    options.UseOracle(builder.Configuration["AppSettings:Database"]));
+    options.UseOracle(builder.Configuration["AppSettings:Database"].Replace("${DATABASE_HOST}", builder.Configuration["DATABASE_HOST"] ?? "localhost")));
+
 string jwtSecret = builder.Configuration["AppSettings:Secret"] ?? AuthService.GenerateRandom(1024);
 
+DbInitializer _dbinit = new DbInitializer(opt);
+_dbinit.Init();
+
+
 builder.Services.AddHttpContextAccessor();
+
+
 
 // JWT aktivieren, aber nicht standardm��ig aktivieren. Daher muss beim Controller
 //     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
