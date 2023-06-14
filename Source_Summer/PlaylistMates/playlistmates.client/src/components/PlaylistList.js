@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
-
 
 const PlaylistList = () => {
   const { playlistId } = useParams();
@@ -21,44 +20,55 @@ const PlaylistList = () => {
       redirect: "follow",
     };
 
-      await fetch(
+    try {
+      const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/Playlist/` + playlistId,
         requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => setPlaylist(result))
-        .catch((error) => console.log("error", error));
-    };
-
-    fetchPlaylist();
-  }, [playlistId]); // fetchPlaylist will only run when playlistId changes
-
-  if (!playlist) {
-    return <div>Loading...</div>; // render loading state
-  }
-  console.log(playlist);
-  var myHeaders = new Headers();
-  myHeaders.append(
-    "Authorization",
-    "Bearer " + localStorage.getItem("jwtToken")
-  );
-
-  var requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-    redirect: "follow",
+      );
+      const result = await response.json();
+      setPlaylist(result);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
   
-  const fetchRole = async () => {
-    await fetch(`${process.env.REACT_APP_API_URL}/api/Playlist/4/role`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => (setRole(result)))
-      .catch((error) => console.log("error", error));
-    console.log(role);
-  };
-  fetchRole();
+  useEffect(() => {
+    
 
-  async function removeSong(songId) {
+    fetchPlaylist();
+  }, [playlistId]);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      var myHeaders = new Headers();
+      myHeaders.append(
+        "Authorization",
+        "Bearer " + localStorage.getItem("jwtToken")
+      );
+
+      var requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/Playlist/4/role`,
+          requestOptions
+        );
+        const result = await response.text();
+        setRole(result);
+        console.log(result);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    fetchRole();
+  }, []);
+
+  const removeSong = async (songId) => {
     var myHeaders = new Headers();
     myHeaders.append(
       "Authorization",
@@ -70,34 +80,39 @@ const PlaylistList = () => {
       headers: myHeaders,
     };
 
-    await fetch(
-      "http://localhost:5054/api/Playlist/" + playlistId + "/songs/" + songId,
-      requestOptions
-    )
-      .then((response) => {
-        console.log(response.text());
-        if (!response.ok) {
-          if (response.status === 204) {
-            fetchPlaylist();
-          } else {
-            throw new Error("There was an error deleting the song, we apologize for the inconvenience");
-          }
-        }
-      })
-      .catch((error) => console.log("error", error));
-      
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/Playlist/${playlistId}/songs/${songId}`,
+        requestOptions
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          "There was an error deleting the song. We apologize for the inconvenience."
+        );
+      }
+
+      // fetch playlist again after song removal regardless of response status
+      fetchPlaylist();
+    } catch (error) {
+      console.log("error", error);
+    }
   };
-    
+
+
+  if (!playlist) {
+    return <div>Loading...</div>; // render loading state
+  }
 
   return (
     <List>
       {playlist.songs.map((song) => (
         <ListItem key={song.id}>
           <ListItemText>{song.titel}</ListItemText>
-          {role === "LISTENER" || role === "OWNER" ? (
-            <ListItemButton onClick={() => {removeSong(song.id)}}>Delete</ListItemButton>
-          ) : (
-            <></>
+          {(role === "LISTENER" || role === "OWNER") && (
+            <ListItemButton onClick={() => removeSong(song.id)}>
+              Delete
+            </ListItemButton>
           )}
         </ListItem>
       ))}
