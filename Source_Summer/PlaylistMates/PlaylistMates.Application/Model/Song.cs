@@ -43,5 +43,9 @@ namespace PlaylistMates.Application.Model
         {
             _songCollections.Add(songCollection);
         }
+        public void RemoveSongCollection(SongCollection songCollection)
+        {
+            _songCollections.Remove(songCollection);
+        }
     }
 }
