@@ -49,7 +49,7 @@ const PlaylistList = () => {
   };
   
   const fetchRole = async () => {
-    await fetch("${process.env.REACT_APP_API_URL}/api/Playlist/4/role", requestOptions)
+    await fetch(`${process.env.REACT_APP_API_URL}/api/Playlist/4/role`, requestOptions)
       .then((response) => response.text())
       .then((result) => (setRole(result)))
       .catch((error) => console.log("error", error));
