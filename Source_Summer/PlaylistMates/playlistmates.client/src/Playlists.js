@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import EditForm from "./components/EditForm";
-
+import CreateForm from "./components/CreateForm";
 
 
 const Playlists = () => {
   const [playlists, setPlaylists] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
+
   const navigate = useNavigate();
 
   const fetchPlaylists = async () => {
@@ -28,19 +30,23 @@ const Playlists = () => {
         `${process.env.REACT_APP_API_URL}/api/Playlist/byUser/` + localStorage.getItem("email"),
         requestOptions
       );
-      console.log(response);
       const result = await response.json();
-      console.log(result);
       setPlaylists(result);
     } catch (error) {
-      console.log("error", error);
     }
   };
+
+
+
   useEffect(() => {
     fetchPlaylists();
   }, []);
    if (isSubmitted) {
      setIsSubmitted(false);
+     fetchPlaylists();
+   }
+   if (isCreated) {
+     setIsCreated(false);
      fetchPlaylists();
    }
   //console.log(playlists);
@@ -49,11 +55,14 @@ const Playlists = () => {
       {playlists.map((playlist, index) => (
         <>
           <ListItem key={index}>
-            <ListItemButton onClick={() => navigate(`/playlist/${playlist.id}`)}>
+            <ListItemButton
+              onClick={() => navigate(`/playlist/${playlist.id}`)}
+            >
               <ListItemText primary={playlist.title} />
             </ListItemButton>
           </ListItem>
           <EditForm playlistId={playlist.id} setIsSubmitted={setIsSubmitted} />
+          <CreateForm setIsCreated={setIsCreated} /> 
         </>
       ))}
     </List>
