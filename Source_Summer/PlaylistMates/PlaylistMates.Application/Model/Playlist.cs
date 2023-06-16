@@ -8,8 +8,9 @@ namespace PlaylistMates.Application.Model
 {
     public class Playlist : SongCollection
     {
-        public Playlist(string description, bool isPublic)
+        public Playlist(string description,string title, bool? isPublic)
         {
+            Title = title;
             Description = description;
             IsPublic = isPublic;
         }

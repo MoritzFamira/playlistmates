@@ -47,11 +47,11 @@ const Playlists = () => {
      fetchPlaylists();
    }
    if (isAddSubmitted) {
-     setIsSubmitted(false);
+     setAddIsSubmitted(false);
      fetchPlaylists();
    }
   //console.log(playlists);
-  return (
+  return (<>
     <List component="nav">
       {playlists.map((playlist, index) => (
         <>
@@ -63,10 +63,11 @@ const Playlists = () => {
             </ListItemButton>
           </ListItem>
           <EditForm playlistId={playlist.id} setIsSubmitted={setIsSubmitted} />
-          <AddForm setIsSubmitted={setAddIsSubmitted} /> 
+          
         </>
       ))}
     </List>
+    <AddForm setIsSubmitted={setAddIsSubmitted} /> </>
   );
 };
 

@@ -9,6 +9,7 @@ using PlaylistMates.Application.Model;
 using Bogus;
 using System.Diagnostics;
 using System.Data;
+using Bogus.DataSets;
 
 
 namespace PlaylistMates.Application.Data
@@ -148,6 +149,7 @@ namespace PlaylistMates.Application.Data
                 .CustomInstantiator(p =>
                 {
                     var playlist = new Playlist(
+                        title: p.Lorem.Word(),
                         description: p.Lorem.Sentence(),
                         isPublic: p.Random.Bool())
                     {

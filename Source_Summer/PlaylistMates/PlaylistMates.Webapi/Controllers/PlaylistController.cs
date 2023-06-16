@@ -138,6 +138,7 @@ namespace PlaylistMates.Webapi.Controllers
                 return BadRequest();
             }
 
+            playlistDto.isPublic = false;
             // Getting the email from the authenticated user
             var email = User.FindFirst(ClaimTypes.Name)?.Value;
 
@@ -150,7 +151,8 @@ namespace PlaylistMates.Webapi.Controllers
                 return NotFound("Account not found");
             }
 
-            var playlist = _mapper.Map<Playlist>(playlistDto);
+            var playlist = new Playlist(playlistDto.Title,playlistDto.Description, playlistDto.isPublic);
+            //var playlist = _mapper.Map<Playlist>(playlistDto);
 
             await _context.Playlists.AddAsync(playlist);
             await _context.SaveChangesAsync();
@@ -161,7 +163,7 @@ namespace PlaylistMates.Webapi.Controllers
             await _context.AccountPlaylists.AddAsync(accountPlaylist);
             await _context.SaveChangesAsync();
 
-            var createdPlaylistDto = _mapper.Map<SongDto>(playlist);
+            var createdPlaylistDto = _mapper.Map<PlaylistDto>(playlist);
 
             return CreatedAtAction(nameof(GetPlaylist), new { id = playlist.Id }, createdPlaylistDto);
         }
