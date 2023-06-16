@@ -21,6 +21,19 @@ builder.Services.AddDbContext<Context>(options =>
 string jwtSecret = builder.Configuration["AppSettings:Secret"] ?? AuthService.GenerateRandom(1024);
 
 DbInitializer _dbinit = new DbInitializer(opt);
+
+try
+{
+    // wait 120 seconds
+    _dbinit.EnsureDbConnectionAsync(120000).GetAwaiter().GetResult();
+}
+catch (Exception ex)
+{
+    // Log the error, send a notification, etc.
+    Console.Error.WriteLine($"Failed to connect to the database: {ex.Message}");
+    Environment.Exit(1);
+}
+
 _dbinit.Init();
 
 

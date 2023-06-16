@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using PlaylistMates.Application.Infrastructure;
 using PlaylistMates.Application.Model;
 using Bogus;
+using System.Diagnostics;
+using System.Data;
 
 
 namespace PlaylistMates.Application.Data
@@ -18,6 +20,38 @@ namespace PlaylistMates.Application.Data
         public DbInitializer(DbContextOptions options)
         {
             _db = new Context(options);
+        }
+        public async Task<bool> EnsureDbConnectionAsync(int timeoutInSeconds)
+        {
+            var connection = _db.Database.GetDbConnection();
+            var stopwatch = Stopwatch.StartNew();
+
+            while (true)
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    if (stopwatch.Elapsed.TotalSeconds >= timeoutInSeconds)
+                    {
+                        throw;
+                    }
+
+                    await Task.Delay(5000); // wait for 5 seconds before trying again
+                }
+                finally
+                {
+                    // close the connection in finally block, ensuring it gets closed no matter what
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+
         }
 
         public void Init()

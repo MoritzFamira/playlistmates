@@ -19,7 +19,7 @@ services:
       context: ./PlaylistMates.Client
       dockerfile: Dockerfile
     ports:
-    - 80:80
+    - 3000:3000
     depends_on:
     - playlistmatesapi
 
@@ -30,7 +30,7 @@ services:
     ports:
     - 1521:1521
     environment:
-    - ORACLE_PASSWORD="password"
+    - ORACLE_PASSWORD=password
     volumes:
-    - data:/opt/oracle/oradata
+    - ./docker/oracle/data:/opt/oracle/oradata
     
