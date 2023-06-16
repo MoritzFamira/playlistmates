@@ -77,7 +77,7 @@ namespace PlaylistMates.Webapi.Controllers
             var account = await _context.Accounts
                 .Include(a => a.AccountPlaylists)
                     .ThenInclude(ap => ap.Playlist)
-                        .ThenInclude(p => p.Songs)
+                .ThenInclude(p => p.Songs)
                 .SingleOrDefaultAsync(a => a.Email == email);
 
             if (account == null)
@@ -87,6 +87,7 @@ namespace PlaylistMates.Webapi.Controllers
 
             var playlists = account.AccountPlaylists.Select(ap => new PlaylistDto
             {
+                Title = ap.Playlist.Title,
                 Id = ap.Playlist.Id,
                 Description = ap.Playlist.Description,
                 IsPublic = ap.Playlist.IsPublic,
@@ -117,6 +118,7 @@ namespace PlaylistMates.Webapi.Controllers
                     return NotFound();
                 }
 
+                existingPlaylist.Title = playlistDto.Title;
                 existingPlaylist.Description = playlistDto.Description;
                 existingPlaylist.IsPublic = playlistDto.IsPublic;
 
@@ -205,12 +207,21 @@ namespace PlaylistMates.Webapi.Controllers
 
         [HttpDelete("/api/Playlist/{playlistId}/songs/{songId}")]
         [Authorize(Policy = "PlaylistCollaboratorOrOwner")]
+
         public async Task<IActionResult> RemoveSongFromPlaylist(int playlistId, int songId)
         {
-            var playlist = await _context.Playlists.FindAsync(playlistId);
-            var song = await _context.Songs.FindAsync(songId);
+            var playlist = await _context.Playlists
+                .Include(p => p.Songs)
+                .FirstOrDefaultAsync(p => p.Id == playlistId);
 
-            if (playlist == null || song == null)
+            if (playlist == null)
+            {
+                return NotFound();
+            }
+
+            var song = playlist.Songs.FirstOrDefault(s => s.Id == songId);
+
+            if (song == null)
             {
                 return NotFound();
             }

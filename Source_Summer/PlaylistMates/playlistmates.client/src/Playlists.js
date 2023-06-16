@@ -1,45 +1,69 @@
 import React, { useState, useEffect } from "react";
 import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import EditForm from "./components/EditForm";
+import CreateForm from "./components/CreateForm";
+
 
 const Playlists = () => {
   const [playlists, setPlaylists] = useState([]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      const email = localStorage.getItem("email"); // Assuming the user's email is stored in localStorage
-      const token = localStorage.getItem("jwtToken"); // Assuming JWT token is stored in localStorage
-      console.debug(email, token);
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/Playlist/byUser/${email}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).catch((error) => console.log("error", error)); //<Alert severity="error">This is an error alert — check it out!</Alert>
+  const fetchPlaylists = async () => {
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      "Bearer " + localStorage.getItem("jwtToken")
+    );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      } else {
-        const data = await response.json();
-        setPlaylists(data);
-      }
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
     };
 
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/Playlist/byUser/` + localStorage.getItem("email"),
+        requestOptions
+      );
+      const result = await response.json();
+      setPlaylists(result);
+    } catch (error) {
+    }
+  };
+
+
+
+  useEffect(() => {
     fetchPlaylists();
   }, []);
-  
+   if (isSubmitted) {
+     setIsSubmitted(false);
+     fetchPlaylists();
+   }
+   if (isCreated) {
+     setIsCreated(false);
+     fetchPlaylists();
+   }
+  //console.log(playlists);
   return (
     <List component="nav">
       {playlists.map((playlist, index) => (
-        <ListItem key={index}>
-          <ListItemButton onClick={() => navigate(`/playlist/${playlist.id}`)}>
-            <ListItemText primary={playlist.description} />
-          </ListItemButton>
-        </ListItem>
+        <>
+          <ListItem key={index}>
+            <ListItemButton
+              onClick={() => navigate(`/playlist/${playlist.id}`)}
+            >
+              <ListItemText primary={playlist.title} />
+            </ListItemButton>
+          </ListItem>
+          <EditForm playlistId={playlist.id} setIsSubmitted={setIsSubmitted} />
+          <CreateForm setIsCreated={setIsCreated} /> 
+        </>
       ))}
     </List>
   );
