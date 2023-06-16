@@ -15,14 +15,14 @@ namespace PlaylistMates.Application.Dto
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public bool IsPublic { get; set; }
+        public bool? IsPublic { get; set; }
     }
     public class PlaylistDto
     {
         public string Title { get; set; }
         public int Id { get; set; }
         public string Description { get; set; }
-        public bool IsPublic { get; set; }
+        public bool? IsPublic { get; set; }
         public string Role { get; set; }
         public List<SongDto> Songs { get; set; } // Add the Songs property
     }
