@@ -17,7 +17,7 @@ namespace PlaylistMates.Application.Model
         protected Playlist() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string Description { get; set; }
-        public bool IsPublic { get; set; }
+        public bool? IsPublic { get; set; }
         public List<AccountPlaylist> AccountPlaylists { get; set; } = new();
         
         // TODO: way to store who playlist is shared with / who faved it (m:n) (waiting for account)

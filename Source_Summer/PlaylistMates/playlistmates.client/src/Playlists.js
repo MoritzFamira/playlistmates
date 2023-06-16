@@ -3,12 +3,14 @@ import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import EditForm from "./components/EditForm";
 import CreateForm from "./components/CreateForm";
+import AddForm from "./components/AddForm";
+
 
 
 const Playlists = () => {
   const [playlists, setPlaylists] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isCreated, setIsCreated] = useState(false);
+  const [isAddSubmitted, setAddIsSubmitted] = useState(false);
 
   const navigate = useNavigate();
 
@@ -45,8 +47,8 @@ const Playlists = () => {
      setIsSubmitted(false);
      fetchPlaylists();
    }
-   if (isCreated) {
-     setIsCreated(false);
+   if (isAddSubmitted) {
+     setIsSubmitted(false);
      fetchPlaylists();
    }
   //console.log(playlists);
@@ -62,7 +64,7 @@ const Playlists = () => {
             </ListItemButton>
           </ListItem>
           <EditForm playlistId={playlist.id} setIsSubmitted={setIsSubmitted} />
-          <CreateForm setIsCreated={setIsCreated} /> 
+          <AddForm setIsSubmitted={setAddIsSubmitted} /> 
         </>
       ))}
     </List>
