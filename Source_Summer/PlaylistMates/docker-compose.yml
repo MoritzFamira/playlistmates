@@ -9,7 +9,7 @@ services:
     ports:
     - 5000:5000
     depends_on:
-    - oracledb
+    - postgres
     environment:
       - DATABASE_HOST=oracledb
 
@@ -22,15 +22,27 @@ services:
     - 3000:3000
     depends_on:
     - playlistmatesapi
-
-  oracledb:
+      
+  postgres:
+    container_name: postgres
     build:
-      context: ./docker/oracle
-      dockerfile: Dockerfile
+        context: ./docker/postgres
+        dockerfile: Dockerfile
     ports:
-    - 1521:1521
+    - 5432:5432
     environment:
-    - ORACLE_PASSWORD=password
+    - POSTGRES_PASSWORD=password
     volumes:
-    - ./docker/oracle/data:/opt/oracle/oradata
+    - ./docker/postgres/data:/var/lib/postgresql/data
+
+  #oracledb:
+  #  build:
+  #    context: ./docker/oracle
+  #    dockerfile: Dockerfile
+  #  ports:
+  #  - 1521:1521
+  #  environment:
+  #  - ORACLE_PASSWORD=password
+  #  volumes:
+  #  - ./docker/oracle/data:/opt/oracle/oradata
     
