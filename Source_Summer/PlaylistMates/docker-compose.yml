@@ -22,6 +22,8 @@ services:
     - 3000:3000
     depends_on:
     - playlistmatesapi
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
       
   postgres:
     container_name: postgres
