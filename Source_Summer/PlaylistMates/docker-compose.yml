@@ -36,6 +36,19 @@ services:
     - POSTGRES_PASSWORD=password
     volumes:
     - ./docker/postgres/data:/var/lib/postgresql/data
+  
+  mongodb:
+    ports:
+      - 27017:27017
+    container_name: dkrcomp-mongo
+    restart: always
+    logging:
+      options:
+        max-size: 1g
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    image: mongo:5.0.23
 
   #oracledb:
   #  build:

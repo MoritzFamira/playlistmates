@@ -19,7 +19,7 @@ namespace PlaylistMates.Test
                 .UseNpgsql("Host=localhost;Database=pos;Username=pos;Password=pos;")
                 .Options;
                 /*.UseOracle("User Id=pos;Password=pos;Data Source=localhost:1521/XEPDB1;")
-                .Options;*/ 
+                .Options;*/
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             
             _db = new Context(opt);
