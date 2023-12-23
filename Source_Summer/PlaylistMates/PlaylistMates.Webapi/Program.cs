@@ -37,8 +37,8 @@ catch (Exception ex)
 _dbinit.Init();
 */
 string jwtSecret = builder.Configuration["AppSettings:Secret"] ?? AuthService.GenerateRandom(1024);
-var db = new MongoDatabase("localhost", "PlaylistMates");
-builder.Services.AddTransient(provider => new MongoDatabase("localhost", "PlaylistMates"));
+var db = new MongoDatabase();
+builder.Services.AddTransient(provider => new MongoDatabase());
 
 builder.Services.AddHttpContextAccessor();
 

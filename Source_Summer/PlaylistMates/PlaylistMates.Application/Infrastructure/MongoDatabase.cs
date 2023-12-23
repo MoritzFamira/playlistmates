@@ -1,4 +1,8 @@
-﻿namespace PlaylistMates.Application.Infrastructure;
+﻿using System.Security.Cryptography.X509Certificates;
+using MongoDB.Bson;
+using PlaylistMates.Application.Documents;
+
+namespace PlaylistMates.Application.Infrastructure;
 
 using Bogus;
 using MongoDB.Driver;
@@ -15,24 +19,28 @@ using System.Linq;
         private readonly IMongoDatabase _db;
         public bool EnableLogging { get; set; }
 
-        public MongoDatabase(string host, string database)
+        public MongoDatabase()
         {
-            var settings = new MongoClientSettings
-            {
-#if DEBUG
-                ClusterConfigurator = cb =>
-                    cb.Subscribe<CommandStartedEvent>(e =>
-                    {
-                        if (EnableLogging) Debug.WriteLine(e.Command.ToString());
-                    }),
-#endif
-                Server = new MongoServerAddress(host)
-            };
+            const string connectionUri = "mongodb+srv://admin:6CiUFfQdjbCt1xHO@cluster0.ltk1drf.mongodb.net/?authSource=admin";
+            
+            var settings = MongoClientSettings.FromConnectionString(connectionUri);
+            // Set the ServerApi field of the settings object to Stable API version 1
+            settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
+            // Create a new client and connect to the server
             _client = new MongoClient(settings);
-            _db = _client.GetDatabase(database);
+            _db = _client.GetDatabase("PlaylistMates");
+            // Send a ping to confirm a successful connection
+            try {
+                var result = _client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
+                Console.WriteLine("Pinged your deployment. You successfully connected to MongoDB!");
+            } catch (Exception ex) {
+                Console.WriteLine(ex);
+            }
         }
-
+        public PlaylistRepositoryd PlaylistRepository => new PlaylistRepositoryd(_db.GetCollection<Playlistd>(nameof(Playlistd)));
+        public Repositoryd<Songd,Guid> SongRepository => new Repositoryd<Songd, Guid>(_db.GetCollection<Songd>(nameof(Songd)));
+        
         /*public Repository<Exam, Guid> ExamRepository => new Repository<Exam, Guid>(_db.GetCollection<Exam>(nameof(Exam)));
         public StudentRepository StudentRepository => new StudentRepository(_db.GetCollection<Student>(nameof(Student)));
         public TeacherRepository TeacherRepository => new TeacherRepository(_db.GetCollection<Teacher>(nameof(Teacher)));*/

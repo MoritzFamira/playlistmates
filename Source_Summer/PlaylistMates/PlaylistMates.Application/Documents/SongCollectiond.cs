@@ -1,7 +1,10 @@
-﻿using PlaylistMates.Application.Model;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using PlaylistMates.Application.Model;
 
 namespace PlaylistMates.Application.Documents
 {
+    [BsonDiscriminator(RootClass = true)]
+    [BsonKnownTypes(typeof(Playlistd))]
     public class SongCollectiond : IDocument<Guid>
     {
         public SongCollectiond(string title, DateTime creationDate)
@@ -10,7 +13,7 @@ namespace PlaylistMates.Application.Documents
             CreationDate = creationDate;
             Id = Guid.NewGuid();
         }
-        public SongCollectiond(string title, DateTime creationDate, List<Song> songs)
+        public SongCollectiond(string title, DateTime creationDate, List<Songd> songs)
         {
             Title = title;
             CreationDate = creationDate;
@@ -25,14 +28,14 @@ namespace PlaylistMates.Application.Documents
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
         
-        protected List<Song> _songs = new();
-        public virtual IReadOnlyCollection<Song> Songs => _songs;
+        protected List<Songd> _songs = new();
+        public virtual IReadOnlyCollection<Songd> Songs => _songs;
 
-        public void AddSong(Song song)
+        public void AddSong(Songd song)
         {
             _songs.Add(song);
         }
-        public void RemoveSong(Song song)
+        public void RemoveSong(Songd song)
         {
             _songs.Remove(song);
         }

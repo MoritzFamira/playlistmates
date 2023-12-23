@@ -1,12 +1,13 @@
-﻿using PlaylistMates.Application.Model;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using PlaylistMates.Application.Model;
 
 namespace PlaylistMates.Application.Documents
 {
+    [BsonDiscriminator("Playlistd")]
     public class Playlistd : SongCollectiond
     {
-        public Playlistd(string description,string title, bool? isPublic)
+        public Playlistd(string description,string title, bool? isPublic) : base(title, DateTime.Now, new List<Songd>())
         {
-            Title = title;
             Description = description;
             IsPublic = isPublic;
         }
@@ -16,7 +17,5 @@ namespace PlaylistMates.Application.Documents
         public string Description { get; set; }
         public bool? IsPublic { get; set; }
         public List<AccountPlaylist> AccountPlaylists { get; set; } = new();
-        
-        // TODO: way to store who playlist is shared with / who faved it (m:n) (waiting for account)
     }
 }
