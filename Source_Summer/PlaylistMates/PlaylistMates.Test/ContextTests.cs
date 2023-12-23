@@ -158,7 +158,8 @@ public class ContextTests : DatabaseTest
             .CustomInstantiator(p =>
             {
                 var playlist = new Playlist(
-                    title:p.Lorem.Word(),
+
+                    title: p.Lorem.Word(),
                     description: p.Lorem.Sentence(),
                     isPublic: p.Random.Bool())
                 {
