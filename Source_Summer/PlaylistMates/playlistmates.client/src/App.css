@@ -14,10 +14,12 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.App-header h1 {
+.App-header h1{
   margin: 0;
   font-size: 1.8em;
 }
+
+
 
 .App-header select {
   padding: 5px 15px;
@@ -137,7 +139,7 @@
 
   .help-button-container {
     position: fixed;
-    bottom: 20px;
+    bottom: 140px;
     right: 20px;
   }
   
@@ -169,3 +171,70 @@
     display: block;
   }
   
+  .helpMore-button-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+  }
+  
+  .helpMore-button {
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Example color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .helpMore-image-container {
+    display: none;
+    position: fixed;
+    bottom: 80px; /* Increased space */
+    right: 80px;
+  }
+  
+  .helpMore-image {
+    width: 300px; /* Adjusted size */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  .helpMore-button:hover + .helpMore-image-container {
+    display: block;
+  }
+
+  .helpMore2-button-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .helpMore2-button {
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Example color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .helpMore2-image-container {
+    display: none;
+    position: fixed;
+    bottom: 80px; /* Increased space */
+    right: 80px;
+  }
+  
+  .helpMore2-image {
+    width: 300px; /* Adjusted size */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  .helpMore2-button:hover + .helpMore2-image-container {
+    display: block;
+  }
