@@ -31,5 +31,6 @@ namespace PlaylistMates.Application.Infrastructure
         }
 
         public virtual void DeleteAll() => _coll.DeleteMany(Builders<TDocument>.Filter.Empty);
+        public virtual void InsertMany(List<TDocument> elements) => _coll.InsertMany(elements);
     }
 }

@@ -1,5 +1,6 @@
 
 
+using Bogus;
 using MongoDB.Bson;
 using PlaylistMates.Application.Documents;
 using PlaylistMates.Application.Infrastructure;
@@ -20,11 +21,23 @@ namespace PlaylistMates.Test
         public void SeedDatabaseTest()
         {
             var db = new MongoDatabase();
-            db.PlaylistRepository.InsertOne(new Playlistd("Test", "Test", true));
-            db.PlaylistRepository.Queryable.ToList().ForEach(p => Console.WriteLine(p.Title));
-            // db.Seed();
-            // var repo = db.StudentRepository;
-            // Assert.True(repo.Queryable.Any());
+            db.PlaylistRepository.DeleteAll();
+            
+            Randomizer.Seed = new Random(1454);
+            var rnd = new Randomizer();
+            db.PlaylistRepository.InsertMany(new Faker<Playlistd>("de")
+                .CustomInstantiator(f =>
+                {
+                    var playlist = new Playlistd(f.Lorem.Sentence(), f.Lorem.Word(), f.Random.Bool());
+                    playlist.Songs.AddRange(new Faker<Songd>("de").CustomInstantiator(f =>
+                    {
+                        var song = new Songd(f.Lorem.Sentence(), f.Lorem.Sentence(), f.Date.Past(),
+                            f.Random.Int(1000, 100000), new List<Artist>(), new List<Platform>());
+                        return song;
+                    }).Generate(20));
+                    return playlist;
+                })
+                .Generate(10));
         }
         [Fact]
         public void AddSongToPlaylistTest()
