@@ -1,17 +1,17 @@
 version: '3'
 
 services:
-  playlistmatesapi:
-    container_name: playlistmatesapi
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-    - 5000:5000
-    depends_on:
-    - postgres
-    environment:
-      - DATABASE_HOST=postgresdb
+#  playlistmatesapi:
+#    container_name: playlistmatesapi
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#    - 5000:5000
+#    depends_on:
+#    - postgres
+#    environment:
+#      - DATABASE_HOST=postgresdb
 
   playlistmatesclient:
     container_name: playlistmatesclient
@@ -20,8 +20,8 @@ services:
       dockerfile: Dockerfile
     ports:
     - 3000:3000
-    depends_on:
-    - playlistmatesapi
+    #depends_on:
+    #- playlistmatesapi
     environment:
       - REACT_APP_API_URL=https://localhost:7227
       
@@ -36,6 +36,19 @@ services:
     - POSTGRES_PASSWORD=password
     volumes:
     - ./docker/postgres/data:/var/lib/postgresql/data
+  
+  mongodb:
+    ports:
+      - 27017:27017
+    container_name: dkrcomp-mongo
+    restart: always
+    logging:
+      options:
+        max-size: 1g
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    image: mongo:5.0.23
 
   #oracledb:
   #  build:
