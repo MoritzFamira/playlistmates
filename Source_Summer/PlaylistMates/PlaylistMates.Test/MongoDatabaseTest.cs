@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Bogus;
 using MongoDB.Bson;
 using PlaylistMates.Application.Documents;
+using PlaylistMates.Application.Dto;
 using PlaylistMates.Application.Infrastructure;
 using PlaylistMates.Application.Model;
 using Xunit.Abstractions;
@@ -116,7 +117,7 @@ namespace PlaylistMates.Test
         {
             var songFaker = new Faker<Songd>("de")
                 .RuleFor(s => s.IsrcCode, f => f.Lorem.Sentence())
-                .RuleFor(s => s.Titel, f => f.Lorem.Sentence())
+                .RuleFor(s => s.Titel, f => f.Lorem.Word())
                 .RuleFor(s => s.ReleaseDate, f => f.Date.Past())
                 .RuleFor(s => s.DurationInMillis, f => f.Random.Int(1000, 100000))
                 .RuleFor(s => s.Artists, f => GenerateArtists(f.Random.Int(1, 3)))
@@ -130,20 +131,84 @@ namespace PlaylistMates.Test
                 .CustomInstantiator(f => f.Name.FullName());
             return artistFaker.Generate(count);
         }
-        // gets playlisttitle and their guids
+        // ohne filter
         [Fact]
         public void GetAllPlaylistsTest()
         {
             var db = new MongoDatabase();
-            var playlist = new Playlistd("Test", "Test", true);
-            db.PlaylistRepository.InsertOne(playlist);
-            var song = new Songd("asdfjkl;","title",new DateTime(2005,1,17),20000,new List<string>(),new List<Platform>());
-            db.PlaylistRepository.AddSongToPlaylist(playlist, song);
-            var updatedPlaylist = db.PlaylistRepository.FindOne(playlist.Id);
-            _output.WriteLine(updatedPlaylist.ToJson());
+            var watch = Stopwatch.StartNew();
+            db.PlaylistRepository.Queryable.ToList();
+            watch.Stop();
+            _output.WriteLine($"Getting all Playlists took {watch.ElapsedMilliseconds} ms");
+        }
+        
+        [Fact]
+        public void GetAllPlaylistsAlphabeticallyTest()
+        {
+            var db = new MongoDatabase();
+            var watch = Stopwatch.StartNew();
+            db.PlaylistRepository.Queryable.OrderBy(p => p.Title).ToList();
+            watch.Stop();
+            _output.WriteLine($"Getting all Playlists sorted alphabetically took {watch.ElapsedMilliseconds} ms");
+        }
+        // mit filter
+        [Fact]
+        public void GetAllPlaylistsThatArePublicTest()
+        {
+            var db = new MongoDatabase();
+            var watch = Stopwatch.StartNew();
+            db.PlaylistRepository.Queryable.Where(p => p.IsPublic == true).ToList();
+            watch.Stop();
+            _output.WriteLine($"Getting all public Playlists took {watch.ElapsedMilliseconds} ms");
+        }
+        // mit filter und sortierung und projection
+        [Fact]
+        public void GetAllPlaylistsThatArePublicSortedAlphabeticallyTest()
+        {
+            var db = new MongoDatabase();
+            var watch = Stopwatch.StartNew();
+            
+            db.PlaylistRepository.Queryable
+                .Where(p => p.IsPublic == true)
+                .OrderBy(p => p.Title)
+                .Select(p => new PlaylistDtod { Title = p.Title, guid = p.Id, Songs = p.Songs
+                    .Select(s => new SongDtod { Titel = s.Titel, guid = s.Id }).ToList()}).ToList();
+            
+            watch.Stop();
+            _output.WriteLine($"Getting all public Playlists sorted alphabetically took {watch.ElapsedMilliseconds} ms");
+        }
+
+        [Fact]
+        public void GetAllPlaylistsThatArePublicAsDtosTest()
+        {
+            var db = new MongoDatabase();
+            var watch = Stopwatch.StartNew();
+            db.PlaylistRepository.Queryable
+                .Where(p => p.IsPublic == true)
+                .Select(p => new PlaylistDtod { Title = p.Title, guid = p.Id, Songs = p.Songs
+                        .Select(s => new SongDtod { Titel = s.Titel, guid = s.Id }).ToList()}).ToList();
+            watch.Stop();
+            _output.WriteLine($"Getting all public Playlists and converting them to Dtos (projection) took {watch.ElapsedMilliseconds} ms");
         }
         [Fact]
-        public void GetSongsByPlaylistTest(){}
+        public void DeleteAllTest()
+        {
+            var db = new MongoDatabase();
+            var watch = Stopwatch.StartNew();
+            db.PlaylistRepository.DeleteAll();
+            watch.Stop();
+            _output.WriteLine($"Deleting all playlists took {watch.ElapsedMilliseconds} ms");
+        }
+        [Fact]
+        public void UpdateAllTitles()
+        {
+            var db = new MongoDatabase();
+            var watch = Stopwatch.StartNew();
+            db.PlaylistRepository.Queryable.ToList().ForEach(p => p.Title = p.Title + " updated");
+            watch.Stop();
+            _output.WriteLine($"Updating all playlists' titles took {watch.ElapsedMilliseconds} ms");
+        }
+        
         // [Fact]
         // public void CountGradedTest()
         // {

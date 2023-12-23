@@ -24,7 +24,12 @@ public class PlaylistControllerd :ControllerBase
     [HttpPost("page/{page}")]
     public ActionResult<List<PlaylistDtod>> GetPlaylistsByPage(int page)
     {
-        return Ok(db.PlaylistRepository.Queryable.Skip((page-1)*10).Take(10).ToList());
+        return Ok(db.PlaylistRepository.Queryable
+            .Select(p => new PlaylistDtod { Title = p.Title, guid = p.Id, Songs = p.Songs
+                .Select(s => new SongDtod { Titel = s.Titel, guid = s.Id }).ToList()})
+            .Skip((page-1)*10)
+            .Take(10)
+            .ToList());
     }
     [HttpPost("pageAlphabetical/{page}")]
     public ActionResult<List<PlaylistDtod>> GetPlaylistsByPageAlphabetically(int page)
@@ -44,6 +49,7 @@ public class PlaylistControllerd :ControllerBase
         db.PlaylistRepository.DeleteOne(guid);
         return Ok();
     }
+    
     [HttpPost("update")]
     public ActionResult UpdateSongTitleOfPlaylist(Guid SongId, Guid PlaylistId, string newTitle)
     {
