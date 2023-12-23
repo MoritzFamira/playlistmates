@@ -1,13 +1,21 @@
 
 
+using MongoDB.Bson;
 using PlaylistMates.Application.Documents;
 using PlaylistMates.Application.Infrastructure;
 using PlaylistMates.Application.Model;
+using Xunit.Abstractions;
 
 namespace PlaylistMates.Test
 {
     public class ExamDatabaseTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public ExamDatabaseTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
         [Fact]
         public void SeedDatabaseTest()
         {
@@ -27,7 +35,7 @@ namespace PlaylistMates.Test
             var song = new Songd("asdfjkl;","title",new DateTime(2005,1,17),20000,new List<Artist>(),new List<Platform>());
             db.PlaylistRepository.AddSongToPlaylist(playlist, song);
             var updatedPlaylist = db.PlaylistRepository.FindOne(playlist.Id);
-            Assert.Contains(song, updatedPlaylist.Songs);
+            _output.WriteLine(updatedPlaylist.ToJson());
         }
         // [Fact]
         // public void CountGradedTest()

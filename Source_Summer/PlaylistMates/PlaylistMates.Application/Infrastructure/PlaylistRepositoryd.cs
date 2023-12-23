@@ -7,7 +7,7 @@ public class PlaylistRepositoryd : Repositoryd<Playlistd,Guid>
 {
     public void AddSongToPlaylist(Playlistd playlist, Songd song)
     {
-        playlist.AddSong(song);
+        playlist.Songs.Add(song);
         UpdateOne(playlist);
     }
     public Playlistd? FindOne(Guid id)

@@ -17,7 +17,7 @@ namespace PlaylistMates.Application.Documents
         {
             Title = title;
             CreationDate = creationDate;
-            _songs = songs;
+            Songs = songs;
             Id = Guid.NewGuid();
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -28,17 +28,6 @@ namespace PlaylistMates.Application.Documents
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
         
-        protected List<Songd> _songs = new();
-        public virtual IReadOnlyCollection<Songd> Songs => _songs;
-
-        public void AddSong(Songd song)
-        {
-            _songs.Add(song);
-        }
-        public void RemoveSong(Songd song)
-        {
-            _songs.Remove(song);
-        }
-
+        public List<Songd> Songs = new();
     }
 }
