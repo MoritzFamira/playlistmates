@@ -13,31 +13,30 @@ function App() {
     useEffect(() => {
       // Simulating an API call to fetch playlists
       const fetchPlaylists = async () => {
-        // Replace with your actual API call
-        // const response = await fetch('/api/playlists');
-        // const data = await response.json();
-        const data = [
-          { id: 1, title: "Chill Vibes1", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 2, title: "Chill Vibes2", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 3, title: "Chill Vibes3", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 4, title: "Chill Vibes4", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 5, title: "Chill Vibes5", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 6, title: "Chill Vibes6", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 7, title: "Chill Vibes7", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 8, title: "Chill Vibes8", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 9, title: "Chill Vibes9", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 10, title: "Chill Vibes10", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 11, title: "Chill Vibes11", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
-          { id: 12, title: "Chill Vibes12", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        const response = await fetch('/api//api/PlaylistControllerd/page/1');
+        const data = await response.json();
+        // const data = [
+        //   { id: 1, title: "Chill Vibes1", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 2, title: "Chill Vibes2", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 3, title: "Chill Vibes3", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 4, title: "Chill Vibes4", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 5, title: "Chill Vibes5", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 6, title: "Chill Vibes6", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 7, title: "Chill Vibes7", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 8, title: "Chill Vibes8", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 9, title: "Chill Vibes9", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 10, title: "Chill Vibes10", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 11, title: "Chill Vibes11", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 12, title: "Chill Vibes12", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
 
-          { id: 13, title: "Chill Vibes", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 13, title: "Chill Vibes", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
 
-          { id: 14, title: "Chill Vibes", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 14, title: "Chill Vibes", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
 
-          { id: 15, title: "Chill Vibes", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
+        //   { id: 15, title: "Chill Vibes", songs: [{ title: "Song 1", artist: "Artist 1" }, { title: "Song 2", artist: "Artist 2" }] },
 
 
-        ];
+        // ];
         setPlaylists(data);
       };
   
@@ -80,14 +79,15 @@ function App() {
     // Add more filtering logic here based on other criteria
   });
 
-const indexOfLastPlaylist = currentPage * itemsPerPage;
-const indexOfFirstPlaylist = indexOfLastPlaylist - itemsPerPage;
-const currentPlaylists = playlists.slice(indexOfFirstPlaylist, indexOfLastPlaylist);
+
 
 
   
   const handlePageChange = (event, value) => {
     console.log('Changing to page: ', value);
+    setPlaylists(
+      fetch(`/api/PlaylistControllerd/page/${value}`)
+    )
     setCurrentPage(value);
   };
 
@@ -104,7 +104,7 @@ const currentPlaylists = playlists.slice(indexOfFirstPlaylist, indexOfLastPlayli
       </header>
       <main className="App-content">
         <div className="playlists-container">
-          {currentPlaylists
+          {playlists
           .map(playlist => (
             <Playlist key={playlist.id} playlistData={playlist} />
           ))}
