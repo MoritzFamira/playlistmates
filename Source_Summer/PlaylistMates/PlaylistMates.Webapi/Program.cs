@@ -9,17 +9,16 @@ using PlaylistMates.Application.Data;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var builder = WebApplication.CreateBuilder(args);
-
+/*
 // Add services to the container.
 var opt = new DbContextOptionsBuilder()
     .UseNpgsql("Host=localhost;Database=pos;Username=pos;Password=pos;")
     .Options;
 
+//builder.Services.AddDbContext<Context>(options =>
+//    options.UseNpgsql(builder.Configuration["AppSettings:Database"].Replace("${DATABASE_HOST}", builder.Configuration["DATABASE_HOST"] ?? "localhost")));
 
-builder.Services.AddDbContext<Context>(options =>
-    options.UseNpgsql(builder.Configuration["AppSettings:Database"].Replace("${DATABASE_HOST}", builder.Configuration["DATABASE_HOST"] ?? "localhost")));
 
-string jwtSecret = builder.Configuration["AppSettings:Secret"] ?? AuthService.GenerateRandom(1024);
 
 DbInitializer _dbinit = new DbInitializer(opt);
 
@@ -36,10 +35,12 @@ catch (Exception ex)
 }
 
 _dbinit.Init();
-
+*/
+string jwtSecret = builder.Configuration["AppSettings:Secret"] ?? AuthService.GenerateRandom(1024);
+var db = new MongoDatabase("localhost", "PlaylistMates");
+builder.Services.AddTransient(provider => new MongoDatabase("localhost", "PlaylistMates"));
 
 builder.Services.AddHttpContextAccessor();
-
 
 
 // JWT aktivieren, aber nicht standardm��ig aktivieren. Daher muss beim Controller
@@ -49,22 +50,23 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddJwtAuthentication(jwtSecret, setDefault: true);
 builder.Services.AddScoped<AuthService>(services =>
     new AuthService(jwtSecret, services.GetRequiredService<Context>()));
-builder.Services.AddScoped<IAuthorizationHandler, PlaylistRoleHandler>();
+// builder.Services.AddScoped<IAuthorizationHandler, PlaylistRoleHandler>();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("PlaylistOwnerPolicy", policy =>
-        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.OWNER })));
-    options.AddPolicy("PlaylistCollaboratorPolicy", policy =>
-        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.COLLABORATOR })));
-    options.AddPolicy("PlaylistListenerPolicy", policy =>
-        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.LISTENER })));
-    options.AddPolicy("PlaylistAnyRole", policy =>
-        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.LISTENER, PlaylistRole.COLLABORATOR, PlaylistRole.OWNER })));
-    options.AddPolicy("PlaylistCollaboratorOrOwner", policy =>
-        policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.COLLABORATOR, PlaylistRole.OWNER })));
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.AddPolicy("PlaylistOwnerPolicy", policy =>
+//         policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.OWNER })));
+//     options.AddPolicy("PlaylistCollaboratorPolicy", policy =>
+//         policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.COLLABORATOR })));
+//     options.AddPolicy("PlaylistListenerPolicy", policy =>
+//         policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.LISTENER })));
+//     options.AddPolicy("PlaylistAnyRole", policy =>
+//         policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.LISTENER, PlaylistRole.COLLABORATOR, PlaylistRole.OWNER })));
+//     options.AddPolicy("PlaylistCollaboratorOrOwner", policy =>
+//         policy.Requirements.Add(new PlaylistRoleRequirement(new List<PlaylistRole> { PlaylistRole.COLLABORATOR, PlaylistRole.OWNER })));
+//
+// });
 
-});
 
 // Juston_Von@gmail.com,pw:1234, Collaborator at 41
 builder.Services.AddControllers().AddNewtonsoftJson(options =>

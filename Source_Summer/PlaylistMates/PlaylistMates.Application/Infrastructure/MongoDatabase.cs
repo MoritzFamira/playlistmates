@@ -8,14 +8,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-{
-    public class ExamDatabase
+
+    public class MongoDatabase
     {
         private readonly MongoClient _client;
         private readonly IMongoDatabase _db;
         public bool EnableLogging { get; set; }
 
-        public ExamDatabase(string host, string database)
+        public MongoDatabase(string host, string database)
         {
             var settings = new MongoClientSettings
             {
@@ -33,11 +33,12 @@ using System.Linq;
             _db = _client.GetDatabase(database);
         }
 
-        public Repository<Exam, Guid> ExamRepository => new Repository<Exam, Guid>(_db.GetCollection<Exam>(nameof(Exam)));
+        /*public Repository<Exam, Guid> ExamRepository => new Repository<Exam, Guid>(_db.GetCollection<Exam>(nameof(Exam)));
         public StudentRepository StudentRepository => new StudentRepository(_db.GetCollection<Student>(nameof(Student)));
-        public TeacherRepository TeacherRepository => new TeacherRepository(_db.GetCollection<Teacher>(nameof(Teacher)));
-
-        public void Seed()
+        public TeacherRepository TeacherRepository => new TeacherRepository(_db.GetCollection<Teacher>(nameof(Teacher)));*/
+        
+        // move to a test
+        /*public void Seed()
         {
             _db.DropCollection(nameof(Student));
             _db.DropCollection(nameof(Exam));
@@ -115,6 +116,5 @@ using System.Linq;
                         })
                         .ToList();
             _db.GetCollection<Exam>(nameof(Exam)).InsertMany(exams);
-        }
+        }*/
     }
-}

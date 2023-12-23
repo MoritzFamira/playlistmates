@@ -1,17 +1,17 @@
 version: '3'
 
 services:
-  playlistmatesapi:
-    container_name: playlistmatesapi
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-    - 5000:5000
-    depends_on:
-    - postgres
-    environment:
-      - DATABASE_HOST=postgresdb
+#  playlistmatesapi:
+#    container_name: playlistmatesapi
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#    - 5000:5000
+#    depends_on:
+#    - postgres
+#    environment:
+#      - DATABASE_HOST=postgresdb
 
   playlistmatesclient:
     container_name: playlistmatesclient
@@ -20,8 +20,8 @@ services:
       dockerfile: Dockerfile
     ports:
     - 3000:3000
-    depends_on:
-    - playlistmatesapi
+    #depends_on:
+    #- playlistmatesapi
     environment:
       - REACT_APP_API_URL=https://localhost:7227
       
