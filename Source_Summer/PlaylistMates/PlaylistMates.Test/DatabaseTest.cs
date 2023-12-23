@@ -16,7 +16,7 @@ namespace PlaylistMates.Test
         public DatabaseTest()
         {
             var opt = new DbContextOptionsBuilder()
-                .UseNpgsql("Host=localhost;Database=pos;Username=pos;Password=pos;")
+                .UseNpgsql("Server=playlistmates.postgres.database.azure.com;Username=pos;Database=dbiComparison;Port=5432;Password=Playl1stm4tes;SSLMode=Prefer")
                 .Options;
                 /*.UseOracle("User Id=pos;Password=pos;Data Source=localhost:1521/XEPDB1;")
                 .Options;*/ 
