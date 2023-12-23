@@ -12,8 +12,12 @@ namespace PlaylistMates.Application.Documents
             IsPublic = isPublic;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        protected Playlistd() { }
+        //protected Playlistd() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public Playlistd()
+        {
+        }
+
         public string Description { get; set; }
         public bool? IsPublic { get; set; }
         public List<AccountPlaylist> AccountPlaylists { get; set; } = new();
