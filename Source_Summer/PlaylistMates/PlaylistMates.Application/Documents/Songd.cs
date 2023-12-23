@@ -16,7 +16,6 @@ namespace PlaylistMates.Application.Documents
             DurationInMillis = durationInMillis;
             Artists = artists;
             Platforms = platforms;
-            Guid = Guid.NewGuid();
             Id = Guid.NewGuid();
         }
 
@@ -25,11 +24,10 @@ namespace PlaylistMates.Application.Documents
 //#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         
         public Guid Id { get; private set; }
-        public Guid Guid { get; set; }
         public string IsrcCode { get; set; }  // ISRC Code with ID (standardized with iso 3901)
         public string Titel { get; set; }  // name of the song
         public DateTime ReleaseDate { get; set; }  
-        public int DurationInMillis { get; set; }   
+        public int DurationInMillis { get; set; }
 
         [BsonElement("Artists")]
         public List<string> Artists { get; set; } = new();

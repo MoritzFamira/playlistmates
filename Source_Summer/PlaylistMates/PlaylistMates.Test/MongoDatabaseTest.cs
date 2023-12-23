@@ -51,9 +51,9 @@ namespace PlaylistMates.Test
             watch.Stop();
             _output.WriteLine($"Inserting 100000 playlists took {watch.ElapsedMilliseconds} ms");
         }*/
-
+        
         [Fact]
-        public void SeedTest()
+        public void SeedTest100k()
         {
             var db = new MongoDatabase();
             db.PlaylistRepository.DeleteAll();
@@ -72,6 +72,46 @@ namespace PlaylistMates.Test
             watch.Stop();
             _output.WriteLine($"Inserting 100000 playlists took {watch.ElapsedMilliseconds} ms");
         }
+        [Fact]
+        public void SeedTest10k()
+        {
+            var db = new MongoDatabase();
+            db.PlaylistRepository.DeleteAll();
+            var playlistFaker = new Faker<Playlistd>("de")
+                .RuleFor(p => p.Title, f => f.Lorem.Word())
+                .RuleFor(p => p.Description, f => f.Lorem.Sentence())
+                .RuleFor(p => p.IsPublic, f => f.Random.Bool())
+                .RuleFor(p => p.Songs, f => GenerateSongs(f.Random.Int(1, 30)))
+                .RuleFor(p => p.CreationDate, f => f.Date.Past())
+                .RuleFor(p => p.AccountPlaylists, f => new List<AccountPlaylist>())
+                .RuleFor(p => p.Guid, f => Guid.NewGuid());
+            var playlists = playlistFaker.Generate(10000);
+            
+            var watch = Stopwatch.StartNew();
+            db.PlaylistRepository.InsertMany(playlists);
+            watch.Stop();
+            _output.WriteLine($"Inserting 10000 playlists took {watch.ElapsedMilliseconds} ms");
+        }
+        [Fact]
+        public void SeedTest1k()
+        {
+            var db = new MongoDatabase();
+            db.PlaylistRepository.DeleteAll();
+            var playlistFaker = new Faker<Playlistd>("de")
+                .RuleFor(p => p.Title, f => f.Lorem.Word())
+                .RuleFor(p => p.Description, f => f.Lorem.Sentence())
+                .RuleFor(p => p.IsPublic, f => f.Random.Bool())
+                .RuleFor(p => p.Songs, f => GenerateSongs(f.Random.Int(1, 30)))
+                .RuleFor(p => p.CreationDate, f => f.Date.Past())
+                .RuleFor(p => p.AccountPlaylists, f => new List<AccountPlaylist>())
+                .RuleFor(p => p.Guid, f => Guid.NewGuid());
+            var playlists = playlistFaker.Generate(1000);
+            
+            var watch = Stopwatch.StartNew();
+            db.PlaylistRepository.InsertMany(playlists);
+            watch.Stop();
+            _output.WriteLine($"Inserting 1000 playlists took {watch.ElapsedMilliseconds} ms");
+        }
         private List<Songd> GenerateSongs(int count)
         {
             var songFaker = new Faker<Songd>("de")
@@ -79,7 +119,8 @@ namespace PlaylistMates.Test
                 .RuleFor(s => s.Titel, f => f.Lorem.Sentence())
                 .RuleFor(s => s.ReleaseDate, f => f.Date.Past())
                 .RuleFor(s => s.DurationInMillis, f => f.Random.Int(1000, 100000))
-                .RuleFor(s => s.Artists, f => GenerateArtists(f.Random.Int(1, 3)));
+                .RuleFor(s => s.Artists, f => GenerateArtists(f.Random.Int(1, 3)))
+                .RuleFor(s => s.Id, f => Guid.NewGuid());
                 //.RuleFor(s => s.Platforms, f => GeneratePlatforms(f.Random.Int(1, 3)));
             return songFaker.Generate(count);
         }
@@ -89,8 +130,9 @@ namespace PlaylistMates.Test
                 .CustomInstantiator(f => f.Name.FullName());
             return artistFaker.Generate(count);
         }
+        // gets playlisttitle and their guids
         [Fact]
-        public void AddSongToPlaylistTest()
+        public void GetAllPlaylistsTest()
         {
             var db = new MongoDatabase();
             var playlist = new Playlistd("Test", "Test", true);
@@ -100,6 +142,8 @@ namespace PlaylistMates.Test
             var updatedPlaylist = db.PlaylistRepository.FindOne(playlist.Id);
             _output.WriteLine(updatedPlaylist.ToJson());
         }
+        [Fact]
+        public void GetSongsByPlaylistTest(){}
         // [Fact]
         // public void CountGradedTest()
         // {
