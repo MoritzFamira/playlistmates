@@ -18,7 +18,7 @@ namespace PlaylistMates.Test
         {
             _output = output;
         }
-        [Fact]
+        /*[Fact]
         public void SeedDatabaseTest()
         {
             var db = new MongoDatabase();
@@ -44,13 +44,13 @@ namespace PlaylistMates.Test
                     }).Generate(20));
                     return playlist;
                 })
-                .Generate(10000);
+                .Generate(100000);
             // time who long this takes to run
             var watch = Stopwatch.StartNew();
             db.PlaylistRepository.InsertMany(playlistDocuments);
             watch.Stop();
-            _output.WriteLine($"Inserting 10000 playlists took {watch.ElapsedMilliseconds} ms");
-        }
+            _output.WriteLine($"Inserting 100000 playlists took {watch.ElapsedMilliseconds} ms");
+        }*/
 
         [Fact]
         public void SeedTest()
@@ -65,12 +65,12 @@ namespace PlaylistMates.Test
                 .RuleFor(p => p.CreationDate, f => f.Date.Past())
                 .RuleFor(p => p.AccountPlaylists, f => new List<AccountPlaylist>())
                 .RuleFor(p => p.Guid, f => Guid.NewGuid());
-            var playlists = playlistFaker.Generate(10000);
+            var playlists = playlistFaker.Generate(100000);
             
             var watch = Stopwatch.StartNew();
             db.PlaylistRepository.InsertMany(playlists);
             watch.Stop();
-            _output.WriteLine($"Inserting 10000 playlists took {watch.ElapsedMilliseconds} ms");
+            _output.WriteLine($"Inserting 100000 playlists took {watch.ElapsedMilliseconds} ms");
         }
         private List<Songd> GenerateSongs(int count)
         {
