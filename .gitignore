@@ -35,3 +35,5 @@ PlaylistMates.Client/*.ntvs*
 PlaylistMates.Client/*.njsproj
 PlaylistMates.Client/*.sln
 PlaylistMates.Client/*.sw?
+
+**/docker/oracle/data
