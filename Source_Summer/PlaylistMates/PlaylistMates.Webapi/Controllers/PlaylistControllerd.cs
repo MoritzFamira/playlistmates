@@ -1,3 +1,4 @@
+using Castle.Core.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlaylistMates.Application.Documents;
@@ -49,19 +50,27 @@ public class PlaylistControllerd :ControllerBase
         db.PlaylistRepository.DeleteOne(guid);
         return Ok();
     }
-    [HttpPost("deleteSong")]
-    public ActionResult DeleteSongFromPlaylist([FromBody] Guid songGuid, [FromBody] Guid playlistGuid)
+    [HttpPost("delete/{playlistGuid}/song/{songGuid}")]
+    public ActionResult DeleteSongFromPlaylist(Guid songGuid, Guid playlistGuid)
     {
         db.PlaylistRepository.FindById(playlistGuid)?.Songs.RemoveAll(s => s.Id == songGuid);
         return Ok();
     }
     //not sure if there is a way to do this like you would for Postgres
-    [HttpPost("updateSong")]
-    public ActionResult UpdateSongTitleInPlaylist([FromBody] Guid songGuid, [FromBody] Guid playlistGuid,
-        [FromBody] string newTitle)
+    [HttpPost("update/{playlistGuid}/song/{songGuid}")]
+    public ActionResult UpdateSongTitleInPlaylist(Guid songGuid, Guid playlistGuid, [FromBody] string newTitle)
     {
+        if (newTitle.IsNullOrEmpty())
+        {
+            return BadRequest("newTitle missing.");
+        }
         //TODO check all these null dereferences and return appropriate ActionResults
-        var song = db.PlaylistRepository.FindById(songGuid)?.Songs.Find(s => s.Id == songGuid);
+        Playlistd? playlist = db.PlaylistRepository.FindOne(playlistGuid);
+        if (playlist is null)
+        {
+            return BadRequest("Playlist " + playlistGuid + " does not exist.");
+        }
+        Songd? song = playlist.Songs.Find(s => s.Id == songGuid);
         if (song is null)
         {
             return BadRequest("Song " + songGuid + " not found in playlist " + playlistGuid+".");
@@ -69,14 +78,14 @@ public class PlaylistControllerd :ControllerBase
 
         string oldTitle = song.Titel;
         song.Titel = newTitle;
+        db.PlaylistRepository.UpdateOne(playlist);
         return Ok("Changed title from " + oldTitle + " to " + newTitle + ".");
     }
-    [HttpPost("update")]
-    public ActionResult UpdateTitleOfPlaylist([FromBody] Guid SongId, [FromBody] Guid PlaylistId, [FromBody] string newTitle)
+    [HttpPost("update/{playlistId}")]
+    public ActionResult UpdateTitleOfPlaylist(Guid playlistId, [FromBody] string newTitle)
     {
-        var playlist = db.PlaylistRepository.FindById(PlaylistId);
-        var song = playlist.Songs.Find(s => s.Id == SongId);
-        song.Titel = newTitle;
+        var playlist = db.PlaylistRepository.FindById(playlistId);
+        playlist.Title = newTitle;
         db.PlaylistRepository.UpdateOne(playlist);
         return Ok(playlist);
     }
