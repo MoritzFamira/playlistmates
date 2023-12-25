@@ -49,7 +49,12 @@ public class PlaylistControllerd :ControllerBase
         db.PlaylistRepository.DeleteOne(guid);
         return Ok();
     }
-    
+    [HttpPost("deleteSong")]
+    public ActionResult DeleteSongFromPlaylist([FromBody] Guid songGuid, [FromBody] Guid playlistGuid)
+    {
+        db.PlaylistRepository.FindById(playlistGuid)?.Songs.RemoveAll(s => s.Id == songGuid);
+        return Ok();
+    }
     [HttpPost("update")]
     public ActionResult UpdateSongTitleOfPlaylist(Guid SongId, Guid PlaylistId, string newTitle)
     {
