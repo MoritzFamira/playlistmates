@@ -55,8 +55,24 @@ public class PlaylistControllerd :ControllerBase
         db.PlaylistRepository.FindById(playlistGuid)?.Songs.RemoveAll(s => s.Id == songGuid);
         return Ok();
     }
+    //not sure if there is a way to do this like you would for Postgres
+    [HttpPost("updateSong")]
+    public ActionResult UpdateSongTitleInPlaylist([FromBody] Guid songGuid, [FromBody] Guid playlistGuid,
+        [FromBody] string newTitle)
+    {
+        //TODO check all these null dereferences and return appropriate ActionResults
+        var song = db.PlaylistRepository.FindById(songGuid)?.Songs.Find(s => s.Id == songGuid);
+        if (song is null)
+        {
+            return BadRequest("Song " + songGuid + " not found in playlist " + playlistGuid+".");
+        }
+
+        string oldTitle = song.Titel;
+        song.Titel = newTitle;
+        return Ok("Changed title from " + oldTitle + " to " + newTitle + ".");
+    }
     [HttpPost("update")]
-    public ActionResult UpdateSongTitleOfPlaylist(Guid SongId, Guid PlaylistId, string newTitle)
+    public ActionResult UpdateTitleOfPlaylist([FromBody] Guid SongId, [FromBody] Guid PlaylistId, [FromBody] string newTitle)
     {
         var playlist = db.PlaylistRepository.FindById(PlaylistId);
         var song = playlist.Songs.Find(s => s.Id == SongId);
