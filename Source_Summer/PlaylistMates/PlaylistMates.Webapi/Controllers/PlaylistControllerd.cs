@@ -27,7 +27,7 @@ public class PlaylistControllerd :ControllerBase
     {
         return Ok(db.PlaylistRepository.Queryable
             .Select(p => new PlaylistDtod { Title = p.Title, guid = p.Id, Songs = p.Songs
-                .Select(s => new SongDtod { Titel = s.Titel, guid = s.Id }).ToList()})
+                .Select(s => new SongDtod { Titel = s.Titel, Artists = s.Artists,guid = s.Id }).ToList()})
             .Skip((page-1)*10)
             .Take(10)
             .ToList());
@@ -38,7 +38,7 @@ public class PlaylistControllerd :ControllerBase
         return Ok(db.PlaylistRepository.Queryable
             .OrderBy(p => p.Title)
             .Select(p => new PlaylistDtod { Title = p.Title, guid = p.Id, Songs = p.Songs
-                        .Select(s => new SongDtod { Titel = s.Titel, guid = s.Id }).ToList()})
+                        .Select(s => new SongDtod { Titel = s.Titel, Artists = s.Artists, guid = s.Id }).ToList()})
             .Skip((page-1)*10)
             .Take(10)
             .ToList());
