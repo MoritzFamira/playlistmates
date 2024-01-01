@@ -1,11 +1,12 @@
 import React from 'react';
 
-function SongItem({ song, onEdit, onDelete }) {
+function SongItem({ song}) {
+  const artists = song.artists ? song.artists.join(', ') : 'Unknown Artist';
+
   return (
     <div className="song-item">
-      <p>{song.title} by {song.artist}</p>
-      <button onClick={() => onEdit(song)} className="edit">Edit</button>
-      <button onClick={() => onDelete(song)} className='delete'>Delete</button>
+      <p>{song.titel} by {artists}</p>
+
     </div>
   );
 }

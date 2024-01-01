@@ -4,22 +4,20 @@
 }
 
 .App-header {
-  color: rgba(255, 255, 255, 0.781);
   background-color: #1a1a2e; /* Darker shade for a sleek look */
+  color: rgba(255, 255, 255, 0.781);
   padding: 20px;
-  margin-bottom: 2%;
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.App-header h1{
+.App-header h1 {
   margin: 0;
   font-size: 1.8em;
 }
-
-
 
 .App-header select {
   padding: 5px 15px;
@@ -28,25 +26,33 @@
   background-color: white;
 }
 
-
 .App-content {
   padding: 20px;
 }
 
 .playlists-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+  justify-content: center;
 }
 
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.toggle-icon {
+  font-size: 1.2em;
+  margin-left: 10px;
+}
 .playlist-card {
+  cursor: pointer;
   background-color: #ffffff;
   border: 2px solid #a34848;
   border-radius: 10px;
   box-shadow: 0 20px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  width: 300px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -55,36 +61,42 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-
 .playlist-title {
   color: #333;
   margin-top: 0;
 }
 
 .songs-container {
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 5px;
+  max-height: 300px; /* Maximum height before scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.delete, .edit {
+  margin: 5px 5px 5px 0;
+  padding: 5px;
 }
 
 .delete {
-  margin: 1%;
   background-color: #8a1616;
   color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 .edit {
-  margin: 1%;
   background-color: #36b34b;
   color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 .delete:hover {
@@ -95,6 +107,12 @@
   background-color: rgb(30, 214, 85);
 }
 
+.song-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+}
 
 .song-item:last-child {
   border-bottom: none;
@@ -103,138 +121,87 @@
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .playlists-container {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: 1fr;
   }
-
 
   .song-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .song-controls {
+    margin-top: 10px;
+    width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px 0;
+    justify-content: space-around;
+  }
+
+  .songs-container {
     padding: 5px;
-    border-bottom: 1px solid #eee;
   }
-  
-  .song-item button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background-color: #61dafb;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .song-item button:hover {
-    background-color: #21a1f1;
-  }
-  
-  /* Style for select filter */
-  .App-header select {
-    padding: 5px 10px;
-    margin-left: 10px;
-  }}
+}
 
+/* Help Button Styles */
+.help-button-container, .helpMore-button-container, .helpMore2-button-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
 
-  .help-button-container {
-    position: fixed;
-    bottom: 140px;
-    right: 20px;
-  }
-  
-  .help-button {
-    padding: 10px 20px;
-    background-color: #4CAF50; /* Example color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .help-image-container {
-    display: none;
-    position: fixed;
-    bottom: 80px; /* Increased space */
-    right: 80px;
-  }
-  
-  .help-image {
-    width: 300px; /* Adjusted size */
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  
-  .help-button:hover + .help-image-container {
-    display: block;
-  }
-  
-  .helpMore-button-container {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-  }
-  
-  .helpMore-button {
-    padding: 10px 20px;
-    background-color: #4CAF50; /* Example color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .helpMore-image-container {
-    display: none;
-    position: fixed;
-    bottom: 80px; /* Increased space */
-    right: 80px;
-  }
-  
-  .helpMore-image {
-    width: 300px; /* Adjusted size */
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  
-  .helpMore-button:hover + .helpMore-image-container {
-    display: block;
-  }
+.help-button, .helpMore-button, .helpMore2-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  .helpMore2-button-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-  }
-  
-  .helpMore2-button {
-    padding: 10px 20px;
-    background-color: #4CAF50; /* Example color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .helpMore2-image-container {
-    display: none;
-    position: fixed;
-    bottom: 80px; /* Increased space */
-    right: 80px;
-  }
-  
-  .helpMore2-image {
-    width: 300px; /* Adjusted size */
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  
-  .helpMore2-button:hover + .helpMore2-image-container {
-    display: block;
-  }
+.help-button:hover, .helpMore-button:hover, .helpMore2-button:hover {
+  background-color: #45a049;
+}
+
+/* Help Image Styles */
+.help-image-container, .helpMore-image-container, .helpMore2-image-container {
+  display: none;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+}
+
+.help-image, .helpMore-image, .helpMore2-image {
+  width: 300px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.help-button:hover + .help-image-container,
+.helpMore-button:hover + .helpMore-image-container,
+.helpMore2-button:hover + .helpMore2-image-container {
+  display: block;
+}
+
+.load-more-button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px 0;
+}
+
+.load-more-button:hover {
+  background-color: #45a049;
+}
+
+.page-section {
+  margin-bottom: 30px;
+}
+
+.page-section h2 {
+  margin-bottom: 15px;
+  color: #333;
+}
