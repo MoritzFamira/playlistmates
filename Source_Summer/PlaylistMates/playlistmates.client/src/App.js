@@ -219,6 +219,27 @@ useEffect(() => {
             <button onClick={() => handleAdd({titel: 'New Playlist' })}>
                 Add Playlist
             </button>
+            <div className="help-button-container">
+        <button className="help-button">Need help?</button>
+        <div className="help-image-container">
+          <h1 className="help-text">I can't help you, but here is an image of Tom to make you feel better!</h1>
+          <img src="tomhanks.jpg" alt="Help Image" className="help-image" />
+        </div>
+      </div>
+      <div className="helpMore-button-container">
+        <button className="helpMore-button">Need more help?</button>
+        <div className="helpMore-image-container">
+          <h1 className="helpMore-text">I can't help you, but here is an image of Emilia to make you feel better!</h1>
+          <img src="emiliaschuele.jpg" alt="Help Image" className="helpMore-image" />
+        </div>
+      </div>
+      <div className="helpMore2-button-container">
+        <button className="helpMore2-button">Need extremely much more more more help?</button>
+        <div className="helpMore2-image-container">
+          <h1 className="helpMore2-text">I can't help you, but here is an image of Keanu to make you feel better!</h1>
+          <img src="keanu.jpg" alt="Help Image" className="helpMore2-image" />
+        </div>
+        </div>
         </div>
     );
 }
