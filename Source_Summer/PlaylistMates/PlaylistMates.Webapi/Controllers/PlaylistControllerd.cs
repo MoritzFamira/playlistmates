@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PlaylistMates.Application.Documents;
 using PlaylistMates.Application.Dto;
 using PlaylistMates.Application.Infrastructure;
+using PlaylistMates.Application.Model;
 
 namespace PlaylistMates.Webapi.Controllers;
 [ApiController]
@@ -44,20 +45,20 @@ public class PlaylistControllerd :ControllerBase
             .ToList());
     }
     
-    [HttpPost("delete/{guid}")]
+    [HttpDelete("delete/{guid}")]
     public ActionResult DeletePlaylistById(Guid guid)
     {
         db.PlaylistRepository.DeleteOne(guid);
         return Ok();
     }
-    [HttpPost("delete/{playlistGuid}/song/{songGuid}")]
+    [HttpDelete("delete/{playlistGuid}/song/{songGuid}")]
     public ActionResult DeleteSongFromPlaylist(Guid songGuid, Guid playlistGuid)
     {
         db.PlaylistRepository.FindById(playlistGuid)?.Songs.RemoveAll(s => s.Id == songGuid);
         return Ok();
     }
     //not sure if there is a way to do this like you would for Postgres
-    [HttpPost("update/{playlistGuid}/song/{songGuid}")]
+    [HttpPut("update/{playlistGuid}/song/{songGuid}")]
     public ActionResult UpdateSongTitleInPlaylist(Guid songGuid, Guid playlistGuid, [FromBody] string newTitle)
     {
         if (newTitle.IsNullOrEmpty())
@@ -81,7 +82,7 @@ public class PlaylistControllerd :ControllerBase
         db.PlaylistRepository.UpdateOne(playlist);
         return Ok("Changed title from " + oldTitle + " to " + newTitle + ".");
     }
-    [HttpPost("update/{playlistId}")]
+    [HttpPut("update/{playlistId}")]
     public ActionResult UpdateTitleOfPlaylist(Guid playlistId, [FromBody] string newTitle)
     {
         var playlist = db.PlaylistRepository.FindById(playlistId);
@@ -89,4 +90,28 @@ public class PlaylistControllerd :ControllerBase
         db.PlaylistRepository.UpdateOne(playlist);
         return Ok(playlist);
     }
+
+    [HttpPost("create")]
+    public ActionResult<Playlistd> CreatePlaylist([FromBody] Playlist model)
+    {
+        if (model == null || string.IsNullOrWhiteSpace(model.Title))
+        {
+            return BadRequest("Invalid playlist data.");
+        }
+
+        // Create a new playlist document from the model
+        var newPlaylist = new Playlistd
+        {
+            Title = model.Title,
+            // Initialize other properties if necessary
+        };
+
+        // Add the new playlist to the database
+        db.PlaylistRepository.InsertOne(newPlaylist);
+
+        // Return the created playlist (or just a success message)
+        return Ok(newPlaylist);
+    }
+
+
 }

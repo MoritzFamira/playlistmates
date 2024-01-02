@@ -17,7 +17,6 @@ function EditModal({ isOpen, onClose, playlist, onSave }) {
     }
   }, [playlist]);
   
-  console.log(playlist);
   if (!isOpen) return null;
 
   const handleSongDelete = (index) => {
@@ -29,13 +28,29 @@ function EditModal({ isOpen, onClose, playlist, onSave }) {
     setShowSongDropdown(!showSongDropdown);
   };
 
-  const handleAddSong = () => {
+const handleAddSong = async () => {
     const songToAdd = availableSongs[selectedSongIndex];
-    // Ensure songs array is initialized
-    const songsArray = updatedPlaylist.songs || [];
-    setUpdatedPlaylist({ ...updatedPlaylist, songs: [...songsArray, songToAdd] });
+    try {
+        // Call the API to add the song to the playlist
+        const response = await fetch(`https://localhost:7227/api/PlaylistControllerd/playlist/${updatedPlaylist.guid}/addSong`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(songToAdd),
+        });
+
+        if (response.ok) {
+            // Update the local state to reflect the added song
+            setUpdatedPlaylist({ ...updatedPlaylist, songs: [...updatedPlaylist.songs, songToAdd] });
+        } else {
+            console.error('Failed to add song to playlist');
+        }
+    } catch (error) {
+        console.error('Error adding song:', error);
+    }
+
     setShowSongDropdown(false); // Hide dropdown after adding a song
 };
+
 
 
 

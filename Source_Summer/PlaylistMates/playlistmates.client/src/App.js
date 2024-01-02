@@ -72,17 +72,12 @@ useEffect(() => {
 };
 
 
-    //TODO: Uncomment this once the put works
-    // const handleEdit = (playlist) => {
-    //     setCurrentPlaylistForEdit(playlist);
-    //     setIsEditModalOpen(true);
-    // };
+
 
  const handleEdit = (playlist) => {
   if (playlist) {
     setCurrentPlaylistForEdit({ ...playlist });
   } else {
-    // For new playlists, initialize with default values
     setCurrentPlaylistForEdit({ title: '', songs: [] });
   }
   setIsEditModalOpen(true);
@@ -92,56 +87,60 @@ useEffect(() => {
     const handleModalClose = () => {
         setIsEditModalOpen(false);
     };
-    //TODO: Uncomment this once the put works
-    // const handleSaveChanges = async (updatedPlaylist) => {
-    //   try {
-    //     await fetch(`https://localhost:7227/api/Playlist/${updatedPlaylist.guid}`, {
-    //       method: 'PUT',
-    //       headers: { 'Content-Type': 'application/json' },
-    //       body: JSON.stringify(updatedPlaylist),
-    //     });
-    //     setPlaylists(playlists.map(playlist => 
-    //       playlist.guid === updatedPlaylist.guid ? updatedPlaylist : playlist
-    //     ));
-    //   } catch (error) {
-    //     console.error('Error updating playlist:', error);
-    //   }
-    // };
 
-    const handleSaveChanges = (updatedPlaylist) => {
-      const updatedPlaylists = playlists.map(p => 
-        p.guid === updatedPlaylist.guid ? updatedPlaylist : p
-      );
-      setPlaylists(updatedPlaylists);
-      console.log(updatedPlaylists);
+    
+    const handleSaveChanges = async (updatedPlaylist) => {
+      try {
+        const response = await fetch(`https://localhost:7227/api/PlaylistControllerd/update/${updatedPlaylist.guid}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedPlaylist),
+        });
+        if (response.ok) {
+          // Update local state to reflect changes
+          const updatedPlaylists = playlists.map(p => 
+            p.guid === updatedPlaylist.guid ? updatedPlaylist : p
+          );
+          setPlaylists(updatedPlaylists);
+        } else {
+          console.error('Failed to update playlist');
+        }
+      } catch (error) {
+        console.error('Error updating playlist:', error);
+      }
       setIsEditModalOpen(false);
     };
+    
   
     
     const handleFilterChange = async (event) => {
       const newFilter = event.target.value.toLowerCase();
       setFilter(newFilter);
-    
       try {
         const response = await fetch(`https://localhost:7227/api/PlaylistControllerd/filter/${newFilter}`);
-        const data = await response.json();
-        setPlaylists(data);
+        const filteredData = await response.json();
+        setPlaylists(filteredData);
       } catch (error) {
         console.error('Error fetching filtered playlists:', error);
       }
     };
     
+    
 
     const handleDelete = async (playlistGuid) => {
       try {
-        const response = await fetch(`https://localhost:7227/api/Playlist/${playlistGuid}`, { method: 'DELETE' });
+        const response = await fetch(`https://localhost:7227/api/PlaylistControllerd/delete/${playlistGuid}`, { method: 'DELETE' });
         if (response.ok) {
-          fetchPlaylists(currentPage); // Refetch playlists for the current page
+          // Remove deleted playlist from local state
+          setPlaylists(playlists.filter(p => p.guid !== playlistGuid));
+        } else {
+          console.error('Failed to delete playlist');
         }
       } catch (error) {
         console.error('Error deleting playlist:', error);
       }
     };
+    
 
 
     // const handleUpdate = async (playlistGuid, updatedName) => {
@@ -162,18 +161,23 @@ useEffect(() => {
 
     const filteredPlaylists = playlists.filter(playlist => filter === 'all' || filter === '' || playlist.category === filter);
 
-    const handleAdd = async (newPlaylist) => {
-        try {
-            await fetch('https://localhost:7227/api/Playlist', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newPlaylist),
-            });
-            setPlaylists([...playlists, newPlaylist]);
-        } catch (error) {
-            console.error('Error adding new playlist:', error);
-        }
-    };
+    const handleAdd = async () => {
+      const newPlaylist = { title: 'New Playlist', description: 'empty', isPublic: true };
+      try {
+          await fetch('https://localhost:7227/api/PlaylistControllerd/create', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newPlaylist),
+          });
+          // Fetch the playlists again to update the state with the new playlist
+          await fetchInitialPlaylists();
+      } catch (error) {
+          console.error('Error adding new playlist:', error);
+      }
+  };
+  
+  
+    
 
     
 
@@ -212,7 +216,7 @@ useEffect(() => {
                 <button onClick={fetchPlaylists} className="load-more-button">Load More</button>
             )}
             </main>
-            <button onClick={() => handleAdd({ guid: 'new-guid', titel: 'New Playlist' })}>
+            <button onClick={() => handleAdd({titel: 'New Playlist' })}>
                 Add Playlist
             </button>
         </div>
